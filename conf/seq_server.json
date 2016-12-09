@@ -1,0 +1,9 @@
+{
+  "thread_group" : {
+    "conn" : 1,
+  },
+  
+  // 网络相关
+  "services":"@import(service.json)"
+}
+

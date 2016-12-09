@@ -1,0 +1,16 @@
+[
+  {
+    "name":"seq_server",
+    "type":"rpc_server",
+    "proto":"zrpc",
+    "hosts":"0.0.0.0",
+    "port":12345,
+  },
+  {
+    "name":"seq_client",
+    "type":"rpc_client",
+    "proto":"zrpc",
+    "hosts":"127.0.0.1",
+    "port":12345,
+  }
+]
