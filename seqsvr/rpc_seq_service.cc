@@ -15,44 +15,19 @@
  * limitations under the License.
  */
 
+// TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
+
 #include "seqsvr/rpc_seq_service.h"
 
-#include "proto/cc/seqsvr.pb.h"
-#include "nebula/net/zproto/api_message_box.h"
+#include "nebula/base/logger/glog_util.h"
 
-static std::map<uint32_t, uint64_t> g_sequece_map;
 
-ProtoRpcResponsePtr DoFetchNextSequenceReq(RpcRequestPtr request) {
-  CAST_RPC_REQUEST(FetchNextSequenceReq, fetch_next_sequece_req);
-  
-  LOG(INFO) << "DoFetchNextSequenceReq - [" << request->ToString() << "], " << fetch_next_sequece_req.Utf8DebugString();
-
-  zproto::SequenceRsp sequence_rsp;
-  auto it = g_sequece_map.find(fetch_next_sequece_req.user_id());
-  if (it!=g_sequece_map.end()) {
-    sequence_rsp.set_sequence(it->second + 1);
-    g_sequece_map[fetch_next_sequece_req.user_id()] = it->second + 1;
-  } else {
-    sequence_rsp.set_sequence(1);
-    g_sequece_map[fetch_next_sequece_req.user_id()] = 1;
-  }
-  
-  return MakeRpcOK(sequence_rsp);
+int ZRpcSeqService::FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) {
+  LOG(ERROR) << "OnZRpcTest - OnZRpcTest unimplemented";
+  return -1;
 }
 
-ProtoRpcResponsePtr DoGetCurrentSequenceReq(RpcRequestPtr request) {
-  CAST_RPC_REQUEST(GetCurrentSequenceReq, get_current_sequece_req);
-  
-  LOG(INFO) << "DoGetCurrentSequenceReq - [" << request->ToString() << "], " << get_current_sequece_req.Utf8DebugString();
-
-  zproto::SequenceRsp sequence_rsp;
-  auto it = g_sequece_map.find(get_current_sequece_req.user_id());
-  if (it!=g_sequece_map.end()) {
-    sequence_rsp.set_sequence(it->second);
-    // g_sequece_map[fetch_next_sequece_req.user_id()] = it->second + 1;
-  } else {
-    sequence_rsp.set_sequence(0);
-  }
-  
-  return MakeRpcOK(sequence_rsp);
+int ZRpcSeqService::GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) {
+  LOG(ERROR) << "OnZRpcTest - OnZRpcTest unimplemented";
+  return -1;
 }

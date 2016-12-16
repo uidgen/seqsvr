@@ -17,17 +17,17 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#ifndef	SEQSVR_RPC_SEQ_SERVICE_H_
-#define	SEQSVR_RPC_SEQ_SERVICE_H_
+#ifndef	SEQSVR_SEQ_SERVICE_IMPL_H_
+#define	SEQSVR_SEQ_SERVICE_IMPL_H_
 
-#include "proto/cc/seqsvr.pb.h"
+#include "seqsvr/rpc_seq_service.h"
 
-class ZRpcSeqService {
+class SeqServiceImpl : public ZRpcSeqService {
 public:
-  virtual ~ZRpcSeqService() = default;
+  virtual ~SeqServiceImpl() = default;
   
-  virtual int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response);
-  virtual int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response);
+  int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) override;
+  int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) override;
 };
 
 #endif

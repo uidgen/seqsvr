@@ -15,18 +15,12 @@
  * limitations under the License.
  */
 
-#include "seqsvr/seq_server.h"
+// TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#include "proto/cc/seqsvr.pb.h"
-#include "nebula/net/zproto/api_message_box.h"
-#include "seqsvr/rpc_seq_service.h"
+#include "seqsvr/seq_server.h"
 
 bool SeqServer::Initialize() {
   RegisterService("seq_server", "rpc_server", "zrpc");
-
-  ZRpcUtil::Register("zproto.FetchNextSequenceReq", DoFetchNextSequenceReq);
-  ZRpcUtil::Register("zproto.GetCurrentSequenceReq", DoGetCurrentSequenceReq);
-  
   BaseServer::Initialize();
   
 #if 0

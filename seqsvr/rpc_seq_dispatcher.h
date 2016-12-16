@@ -17,18 +17,18 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#ifndef	SEQSVR_RPC_SEQ_SERVICE_H_
-#define	SEQSVR_RPC_SEQ_SERVICE_H_
+#ifndef	SEQSVR_RPC_SEQ_DISPATCHER_H_
+#define	SEQSVR_RPC_SEQ_DISPATCHER_H_
 
-#include "proto/cc/seqsvr.pb.h"
+#include "nebula/net/zproto/zproto_package_data.h"
 
-class ZRpcSeqService {
+class ZRpcSeqDispatcher {
 public:
-  virtual ~ZRpcSeqService() = default;
+  ZRpcSeqDispatcher();
+  ~ZRpcSeqDispatcher() = default;
   
-  virtual int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response);
-  virtual int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response);
+  static ProtoRpcResponsePtr FetchNextSequence(RpcRequestPtr request);
+  static ProtoRpcResponsePtr GetCurrentSequence(RpcRequestPtr request);
 };
 
-#endif
-
+#endif // SEQSVR_RPC_SEQ_DISPATCHER_H_
