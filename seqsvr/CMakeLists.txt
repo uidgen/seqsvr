@@ -19,10 +19,10 @@ include_directories(. .. ../../nebula)
 set (SRC_LIST
   seq_server.cc
   seq_server.h
-  rpc_seq_dispatcher.cc
-  rpc_seq_dispatcher.h
-  rpc_seq_service.cc
-  rpc_seq_service.h
+  zrpc_seq_dispatcher.cc
+  zrpc_seq_dispatcher.h
+  zrpc_seq_service.cc
+  zrpc_seq_service.h
   seq_service_impl.cc
   seq_service_impl.h
 

@@ -17,8 +17,8 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#ifndef	SEQSVR_RPC_SEQ_DISPATCHER_H_
-#define	SEQSVR_RPC_SEQ_DISPATCHER_H_
+#ifndef	SEQSVR_ZRPC_SEQ_DISPATCHER_H_
+#define	SEQSVR_ZRPC_SEQ_DISPATCHER_H_
 
 #include "nebula/net/zproto/zproto_package_data.h"
 

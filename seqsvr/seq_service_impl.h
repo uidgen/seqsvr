@@ -20,7 +20,7 @@
 #ifndef	SEQSVR_SEQ_SERVICE_IMPL_H_
 #define	SEQSVR_SEQ_SERVICE_IMPL_H_
 
-#include "seqsvr/rpc_seq_service.h"
+#include "seqsvr/zrpc_seq_service.h"
 
 class SeqServiceImpl : public ZRpcSeqService {
 public:

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016, https://github.com/nebula-im/seqsvr
+ *  Copyright (c) 2016, https://github.com/zhatalk
  *  All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,18 +17,17 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#ifndef	SEQSVR_RPC_SEQ_SERVICE_H_
-#define	SEQSVR_RPC_SEQ_SERVICE_H_
+#include "seqsvr/zrpc_seq_service.h"
 
-#include "proto/cc/seqsvr.pb.h"
+#include "nebula/base/logger/glog_util.h"
 
-class ZRpcSeqService {
-public:
-  virtual ~ZRpcSeqService() = default;
-  
-  virtual int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response);
-  virtual int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response);
-};
 
-#endif
+int ZRpcSeqService::FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) {
+  LOG(ERROR) << "OnZRpcTest - OnZRpcTest unimplemented";
+  return -1;
+}
 
+int ZRpcSeqService::GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) {
+  LOG(ERROR) << "OnZRpcTest - OnZRpcTest unimplemented";
+  return -1;
+}
