@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016, https://github.com/zhatalk
+ *  Copyright (c) 2016, https://github.com/nebula-im
  *  All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,11 @@
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
 #include "seqsvr/seq_server.h"
+#include "seqsvr/sequence_manager.h"
 
 bool SeqServer::Initialize() {
+  SequenceManager::GetInstance()->Initialize("/tmp/seq.dat");
+  
   RegisterService("seq_server", "rpc_server", "zrpc");
   BaseServer::Initialize();
   
@@ -38,6 +41,8 @@ bool SeqServer::Initialize() {
   
   return true;
 }
+
+#include <iostream>
 
 int main(int argc, char* argv[]) {
   return nebula::DoMain<SeqServer>(argc, argv);

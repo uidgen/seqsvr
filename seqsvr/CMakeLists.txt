@@ -17,6 +17,8 @@
 include_directories(. .. ../../nebula)
 
 set (SRC_LIST
+  sequence_manager.cc
+  sequence_manager.h
   seq_server.cc
   seq_server.h
   zrpc_seq_dispatcher.cc

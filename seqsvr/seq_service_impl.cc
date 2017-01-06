@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016, https://github.com/zhatalk
+ *  Copyright (c) 2016, https://github.com/nebula-im
  *  All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,30 +22,17 @@
 #include "proto/cc/seqsvr.pb.h"
 #include "nebula/net/zproto/api_message_box.h"
 
-static std::map<uint32_t, uint64_t> g_sequece_map;
+#include "seqsvr/sequence_manager.h"
 
 int SeqServiceImpl::FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) {
-  auto it = g_sequece_map.find(request.user_id());
-  if (it!=g_sequece_map.end()) {
-    response->set_sequence(it->second + 1);
-    g_sequece_map[request.user_id()] = it->second + 1;
-  } else {
-    response->set_sequence(1);
-    g_sequece_map[request.user_id()] = 1;
-  }
-  
+  auto seq = SequenceManager::GetInstance()->FetchNextSequence(request.user_id());
+  response->set_sequence(seq);
   return 0;
 }
 
 int SeqServiceImpl::GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) {
-  auto it = g_sequece_map.find(request.user_id());
-  if (it!=g_sequece_map.end()) {
-    response->set_sequence(it->second);
-    // g_sequece_map[fetch_next_sequece_req.user_id()] = it->second + 1;
-  } else {
-    response->set_sequence(0);
-  }
-  
+  auto seq = SequenceManager::GetInstance()->GetCurrentSequence(request.user_id());
+  response->set_sequence(seq);
   return 0;
 }
 
