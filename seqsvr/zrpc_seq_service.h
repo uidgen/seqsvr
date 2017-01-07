@@ -28,6 +28,8 @@ public:
   
   virtual int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response);
   virtual int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response);
+  virtual int FetchNextSequenceList(const zproto::FetchNextSequenceListReq& request, zproto::SequenceListRsp* response);
+  virtual int GetCurrentSequenceList(const zproto::GetCurrentSequenceListReq& request, zproto::SequenceListRsp* response);
 };
 
 #endif

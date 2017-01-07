@@ -17,6 +17,8 @@
 
 #include "client/client.h"
 
+#include <iostream>
+
 #include "proto/cc/seqsvr.pb.h"
 #include "nebula/net/zproto/api_message_box.h"
 

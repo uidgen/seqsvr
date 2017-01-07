@@ -37,8 +37,12 @@ void protobuf_InitDefaults_seqsvr_2eproto();
 void protobuf_AssignDesc_seqsvr_2eproto();
 void protobuf_ShutdownFile_seqsvr_2eproto();
 
+class FetchNextSequenceListReq;
 class FetchNextSequenceReq;
+class GetCurrentSequenceListReq;
 class GetCurrentSequenceReq;
+class IdSeq;
+class SequenceListRsp;
 class SequenceRsp;
 
 // ===================================================================
@@ -89,17 +93,17 @@ class FetchNextSequenceReq : public ::google::protobuf::Message /* @@protoc_inse
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 user_id = 1;
-  void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  ::google::protobuf::uint32 user_id() const;
-  void set_user_id(::google::protobuf::uint32 value);
+  // optional uint32 id = 1;
+  void clear_id();
+  static const int kIdFieldNumber = 1;
+  ::google::protobuf::uint32 id() const;
+  void set_id(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:zproto.FetchNextSequenceReq)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 user_id_;
+  ::google::protobuf::uint32 id_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
   friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
@@ -158,17 +162,17 @@ class GetCurrentSequenceReq : public ::google::protobuf::Message /* @@protoc_ins
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 user_id = 1;
-  void clear_user_id();
-  static const int kUserIdFieldNumber = 1;
-  ::google::protobuf::uint32 user_id() const;
-  void set_user_id(::google::protobuf::uint32 value);
+  // optional uint32 id = 1;
+  void clear_id();
+  static const int kIdFieldNumber = 1;
+  ::google::protobuf::uint32 id() const;
+  void set_id(::google::protobuf::uint32 value);
 
   // @@protoc_insertion_point(class_scope:zproto.GetCurrentSequenceReq)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 user_id_;
+  ::google::protobuf::uint32 id_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
   friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
@@ -248,6 +252,307 @@ class SequenceRsp : public ::google::protobuf::Message /* @@protoc_insertion_poi
 };
 extern ::google::protobuf::internal::ExplicitlyConstructed<SequenceRsp> SequenceRsp_default_instance_;
 
+// -------------------------------------------------------------------
+
+class FetchNextSequenceListReq : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.FetchNextSequenceListReq) */ {
+ public:
+  FetchNextSequenceListReq();
+  virtual ~FetchNextSequenceListReq();
+
+  FetchNextSequenceListReq(const FetchNextSequenceListReq& from);
+
+  inline FetchNextSequenceListReq& operator=(const FetchNextSequenceListReq& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FetchNextSequenceListReq& default_instance();
+
+  static const FetchNextSequenceListReq* internal_default_instance();
+
+  void Swap(FetchNextSequenceListReq* other);
+
+  // implements Message ----------------------------------------------
+
+  inline FetchNextSequenceListReq* New() const { return New(NULL); }
+
+  FetchNextSequenceListReq* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(FetchNextSequenceListReq* other);
+  void UnsafeMergeFrom(const FetchNextSequenceListReq& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint32 id_list = 1;
+  int id_list_size() const;
+  void clear_id_list();
+  static const int kIdListFieldNumber = 1;
+  ::google::protobuf::uint32 id_list(int index) const;
+  void set_id_list(int index, ::google::protobuf::uint32 value);
+  void add_id_list(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      id_list() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_id_list();
+
+  // @@protoc_insertion_point(class_scope:zproto.FetchNextSequenceListReq)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > id_list_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<FetchNextSequenceListReq> FetchNextSequenceListReq_default_instance_;
+
+// -------------------------------------------------------------------
+
+class GetCurrentSequenceListReq : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.GetCurrentSequenceListReq) */ {
+ public:
+  GetCurrentSequenceListReq();
+  virtual ~GetCurrentSequenceListReq();
+
+  GetCurrentSequenceListReq(const GetCurrentSequenceListReq& from);
+
+  inline GetCurrentSequenceListReq& operator=(const GetCurrentSequenceListReq& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const GetCurrentSequenceListReq& default_instance();
+
+  static const GetCurrentSequenceListReq* internal_default_instance();
+
+  void Swap(GetCurrentSequenceListReq* other);
+
+  // implements Message ----------------------------------------------
+
+  inline GetCurrentSequenceListReq* New() const { return New(NULL); }
+
+  GetCurrentSequenceListReq* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(GetCurrentSequenceListReq* other);
+  void UnsafeMergeFrom(const GetCurrentSequenceListReq& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint32 id_list = 1;
+  int id_list_size() const;
+  void clear_id_list();
+  static const int kIdListFieldNumber = 1;
+  ::google::protobuf::uint32 id_list(int index) const;
+  void set_id_list(int index, ::google::protobuf::uint32 value);
+  void add_id_list(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      id_list() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_id_list();
+
+  // @@protoc_insertion_point(class_scope:zproto.GetCurrentSequenceListReq)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > id_list_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<GetCurrentSequenceListReq> GetCurrentSequenceListReq_default_instance_;
+
+// -------------------------------------------------------------------
+
+class IdSeq : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.IdSeq) */ {
+ public:
+  IdSeq();
+  virtual ~IdSeq();
+
+  IdSeq(const IdSeq& from);
+
+  inline IdSeq& operator=(const IdSeq& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const IdSeq& default_instance();
+
+  static const IdSeq* internal_default_instance();
+
+  void Swap(IdSeq* other);
+
+  // implements Message ----------------------------------------------
+
+  inline IdSeq* New() const { return New(NULL); }
+
+  IdSeq* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(IdSeq* other);
+  void UnsafeMergeFrom(const IdSeq& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 id = 1;
+  void clear_id();
+  static const int kIdFieldNumber = 1;
+  ::google::protobuf::uint32 id() const;
+  void set_id(::google::protobuf::uint32 value);
+
+  // optional uint64 sequence = 2;
+  void clear_sequence();
+  static const int kSequenceFieldNumber = 2;
+  ::google::protobuf::uint64 sequence() const;
+  void set_sequence(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:zproto.IdSeq)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint64 sequence_;
+  ::google::protobuf::uint32 id_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<IdSeq> IdSeq_default_instance_;
+
+// -------------------------------------------------------------------
+
+class SequenceListRsp : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.SequenceListRsp) */ {
+ public:
+  SequenceListRsp();
+  virtual ~SequenceListRsp();
+
+  SequenceListRsp(const SequenceListRsp& from);
+
+  inline SequenceListRsp& operator=(const SequenceListRsp& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SequenceListRsp& default_instance();
+
+  static const SequenceListRsp* internal_default_instance();
+
+  void Swap(SequenceListRsp* other);
+
+  // implements Message ----------------------------------------------
+
+  inline SequenceListRsp* New() const { return New(NULL); }
+
+  SequenceListRsp* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(SequenceListRsp* other);
+  void UnsafeMergeFrom(const SequenceListRsp& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .zproto.IdSeq sequence_list = 1;
+  int sequence_list_size() const;
+  void clear_sequence_list();
+  static const int kSequenceListFieldNumber = 1;
+  const ::zproto::IdSeq& sequence_list(int index) const;
+  ::zproto::IdSeq* mutable_sequence_list(int index);
+  ::zproto::IdSeq* add_sequence_list();
+  ::google::protobuf::RepeatedPtrField< ::zproto::IdSeq >*
+      mutable_sequence_list();
+  const ::google::protobuf::RepeatedPtrField< ::zproto::IdSeq >&
+      sequence_list() const;
+
+  // @@protoc_insertion_point(class_scope:zproto.SequenceListRsp)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::zproto::IdSeq > sequence_list_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<SequenceListRsp> SequenceListRsp_default_instance_;
+
 // ===================================================================
 
 
@@ -256,18 +561,18 @@ extern ::google::protobuf::internal::ExplicitlyConstructed<SequenceRsp> Sequence
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // FetchNextSequenceReq
 
-// optional uint32 user_id = 1;
-inline void FetchNextSequenceReq::clear_user_id() {
-  user_id_ = 0u;
+// optional uint32 id = 1;
+inline void FetchNextSequenceReq::clear_id() {
+  id_ = 0u;
 }
-inline ::google::protobuf::uint32 FetchNextSequenceReq::user_id() const {
-  // @@protoc_insertion_point(field_get:zproto.FetchNextSequenceReq.user_id)
-  return user_id_;
+inline ::google::protobuf::uint32 FetchNextSequenceReq::id() const {
+  // @@protoc_insertion_point(field_get:zproto.FetchNextSequenceReq.id)
+  return id_;
 }
-inline void FetchNextSequenceReq::set_user_id(::google::protobuf::uint32 value) {
+inline void FetchNextSequenceReq::set_id(::google::protobuf::uint32 value) {
   
-  user_id_ = value;
-  // @@protoc_insertion_point(field_set:zproto.FetchNextSequenceReq.user_id)
+  id_ = value;
+  // @@protoc_insertion_point(field_set:zproto.FetchNextSequenceReq.id)
 }
 
 inline const FetchNextSequenceReq* FetchNextSequenceReq::internal_default_instance() {
@@ -277,18 +582,18 @@ inline const FetchNextSequenceReq* FetchNextSequenceReq::internal_default_instan
 
 // GetCurrentSequenceReq
 
-// optional uint32 user_id = 1;
-inline void GetCurrentSequenceReq::clear_user_id() {
-  user_id_ = 0u;
+// optional uint32 id = 1;
+inline void GetCurrentSequenceReq::clear_id() {
+  id_ = 0u;
 }
-inline ::google::protobuf::uint32 GetCurrentSequenceReq::user_id() const {
-  // @@protoc_insertion_point(field_get:zproto.GetCurrentSequenceReq.user_id)
-  return user_id_;
+inline ::google::protobuf::uint32 GetCurrentSequenceReq::id() const {
+  // @@protoc_insertion_point(field_get:zproto.GetCurrentSequenceReq.id)
+  return id_;
 }
-inline void GetCurrentSequenceReq::set_user_id(::google::protobuf::uint32 value) {
+inline void GetCurrentSequenceReq::set_id(::google::protobuf::uint32 value) {
   
-  user_id_ = value;
-  // @@protoc_insertion_point(field_set:zproto.GetCurrentSequenceReq.user_id)
+  id_ = value;
+  // @@protoc_insertion_point(field_set:zproto.GetCurrentSequenceReq.id)
 }
 
 inline const GetCurrentSequenceReq* GetCurrentSequenceReq::internal_default_instance() {
@@ -315,7 +620,161 @@ inline void SequenceRsp::set_sequence(::google::protobuf::uint64 value) {
 inline const SequenceRsp* SequenceRsp::internal_default_instance() {
   return &SequenceRsp_default_instance_.get();
 }
+// -------------------------------------------------------------------
+
+// FetchNextSequenceListReq
+
+// repeated uint32 id_list = 1;
+inline int FetchNextSequenceListReq::id_list_size() const {
+  return id_list_.size();
+}
+inline void FetchNextSequenceListReq::clear_id_list() {
+  id_list_.Clear();
+}
+inline ::google::protobuf::uint32 FetchNextSequenceListReq::id_list(int index) const {
+  // @@protoc_insertion_point(field_get:zproto.FetchNextSequenceListReq.id_list)
+  return id_list_.Get(index);
+}
+inline void FetchNextSequenceListReq::set_id_list(int index, ::google::protobuf::uint32 value) {
+  id_list_.Set(index, value);
+  // @@protoc_insertion_point(field_set:zproto.FetchNextSequenceListReq.id_list)
+}
+inline void FetchNextSequenceListReq::add_id_list(::google::protobuf::uint32 value) {
+  id_list_.Add(value);
+  // @@protoc_insertion_point(field_add:zproto.FetchNextSequenceListReq.id_list)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+FetchNextSequenceListReq::id_list() const {
+  // @@protoc_insertion_point(field_list:zproto.FetchNextSequenceListReq.id_list)
+  return id_list_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+FetchNextSequenceListReq::mutable_id_list() {
+  // @@protoc_insertion_point(field_mutable_list:zproto.FetchNextSequenceListReq.id_list)
+  return &id_list_;
+}
+
+inline const FetchNextSequenceListReq* FetchNextSequenceListReq::internal_default_instance() {
+  return &FetchNextSequenceListReq_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// GetCurrentSequenceListReq
+
+// repeated uint32 id_list = 1;
+inline int GetCurrentSequenceListReq::id_list_size() const {
+  return id_list_.size();
+}
+inline void GetCurrentSequenceListReq::clear_id_list() {
+  id_list_.Clear();
+}
+inline ::google::protobuf::uint32 GetCurrentSequenceListReq::id_list(int index) const {
+  // @@protoc_insertion_point(field_get:zproto.GetCurrentSequenceListReq.id_list)
+  return id_list_.Get(index);
+}
+inline void GetCurrentSequenceListReq::set_id_list(int index, ::google::protobuf::uint32 value) {
+  id_list_.Set(index, value);
+  // @@protoc_insertion_point(field_set:zproto.GetCurrentSequenceListReq.id_list)
+}
+inline void GetCurrentSequenceListReq::add_id_list(::google::protobuf::uint32 value) {
+  id_list_.Add(value);
+  // @@protoc_insertion_point(field_add:zproto.GetCurrentSequenceListReq.id_list)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+GetCurrentSequenceListReq::id_list() const {
+  // @@protoc_insertion_point(field_list:zproto.GetCurrentSequenceListReq.id_list)
+  return id_list_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+GetCurrentSequenceListReq::mutable_id_list() {
+  // @@protoc_insertion_point(field_mutable_list:zproto.GetCurrentSequenceListReq.id_list)
+  return &id_list_;
+}
+
+inline const GetCurrentSequenceListReq* GetCurrentSequenceListReq::internal_default_instance() {
+  return &GetCurrentSequenceListReq_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// IdSeq
+
+// optional uint32 id = 1;
+inline void IdSeq::clear_id() {
+  id_ = 0u;
+}
+inline ::google::protobuf::uint32 IdSeq::id() const {
+  // @@protoc_insertion_point(field_get:zproto.IdSeq.id)
+  return id_;
+}
+inline void IdSeq::set_id(::google::protobuf::uint32 value) {
+  
+  id_ = value;
+  // @@protoc_insertion_point(field_set:zproto.IdSeq.id)
+}
+
+// optional uint64 sequence = 2;
+inline void IdSeq::clear_sequence() {
+  sequence_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 IdSeq::sequence() const {
+  // @@protoc_insertion_point(field_get:zproto.IdSeq.sequence)
+  return sequence_;
+}
+inline void IdSeq::set_sequence(::google::protobuf::uint64 value) {
+  
+  sequence_ = value;
+  // @@protoc_insertion_point(field_set:zproto.IdSeq.sequence)
+}
+
+inline const IdSeq* IdSeq::internal_default_instance() {
+  return &IdSeq_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// SequenceListRsp
+
+// repeated .zproto.IdSeq sequence_list = 1;
+inline int SequenceListRsp::sequence_list_size() const {
+  return sequence_list_.size();
+}
+inline void SequenceListRsp::clear_sequence_list() {
+  sequence_list_.Clear();
+}
+inline const ::zproto::IdSeq& SequenceListRsp::sequence_list(int index) const {
+  // @@protoc_insertion_point(field_get:zproto.SequenceListRsp.sequence_list)
+  return sequence_list_.Get(index);
+}
+inline ::zproto::IdSeq* SequenceListRsp::mutable_sequence_list(int index) {
+  // @@protoc_insertion_point(field_mutable:zproto.SequenceListRsp.sequence_list)
+  return sequence_list_.Mutable(index);
+}
+inline ::zproto::IdSeq* SequenceListRsp::add_sequence_list() {
+  // @@protoc_insertion_point(field_add:zproto.SequenceListRsp.sequence_list)
+  return sequence_list_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::zproto::IdSeq >*
+SequenceListRsp::mutable_sequence_list() {
+  // @@protoc_insertion_point(field_mutable_list:zproto.SequenceListRsp.sequence_list)
+  return &sequence_list_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::zproto::IdSeq >&
+SequenceListRsp::sequence_list() const {
+  // @@protoc_insertion_point(field_list:zproto.SequenceListRsp.sequence_list)
+  return sequence_list_;
+}
+
+inline const SequenceListRsp* SequenceListRsp::internal_default_instance() {
+  return &SequenceListRsp_default_instance_.get();
+}
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

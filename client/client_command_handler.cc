@@ -20,12 +20,9 @@
 #include <folly/Conv.h>
 
 #include "nebula/base/time_util.h"
-#include "nebula/base/id_util.h"
-
-#include "proto/cc/seqsvr.pb.h"
-#include "nebula/net/zproto/api_message_box.h"
-
-#include "nebula/net/rpc/zrpc_service_util.h"
+// #include "nebula/base/id_util.h"
+// #include "nebula/net/rpc/zrpc_service_util.h"
+#include "message_handler_util.h"
 
 typedef int (*ClientCommandHandlerFunc)(const std::vector<folly::StringPiece>&);
 
@@ -39,59 +36,118 @@ struct CmdEntry {
 };
 
 int DoFetchNextSeq(const std::vector<folly::StringPiece>& command_lines) {
-  uint32_t user_id = 0;
+  uint32_t id = 0;
   try {
-    user_id = folly::to<uint32_t>(command_lines[1]);
+    id = folly::to<uint32_t>(command_lines[1]);
+  } catch (...) {
+    LOG(ERROR) << "DoFetchNextSeq - user_id invalid, not a number: " << command_lines[1];
+    return 0;
+  }
+
+  zproto::FetchNextSequenceReq fetch_next_sequence_req;
+  fetch_next_sequence_req.set_id(id);
+  
+  ZRpcClientCall<zproto::SequenceRsp>("seq_client",
+                                 MakeRpcRequest(fetch_next_sequence_req),
+                                 [] (std::shared_ptr<ApiRpcOk<zproto::SequenceRsp>> seq_rsp,
+                                     ProtoRpcResponsePtr rpc_error) -> int {
+                                   if (rpc_error) {
+                                     LOG(ERROR) << "DoFetchNextSeq - rpc_error: " << rpc_error->ToString();
+                                   } else {
+                                     LOG(INFO) << "DoFetchNextSeq - seq_rsp: " << seq_rsp->ToString();
+                                   }
+                                   return 0;
+                                 });
+  return 0;
+}
+
+int DoGetCurrentSeq(const std::vector<folly::StringPiece>& command_lines) {
+  uint32_t id = 0;
+  try {
+    id = folly::to<uint32_t>(command_lines[1]);
   } catch (...) {
     LOG(ERROR) << "DoFetchNextSeq - user_id invalid, not a number: " << command_lines[1];
     return 0;
   }
   
-  zproto::FetchNextSequenceReq fetch_next_sequence_req;
-  fetch_next_sequence_req.set_user_id(user_id);
+  zproto::GetCurrentSequenceReq get_current_sequence_req;
+  get_current_sequence_req.set_id(id);
   
-  auto req = MakeRpcRequest(fetch_next_sequence_req);
-  LOG(INFO) << "DoFetchNextSeq - req: " << req->ToString();
-  ZRpcUtil::DoClientCall("seq_client", req)
-  .within(std::chrono::milliseconds(5000))
-  .then([](ProtoRpcResponsePtr rsp) {
-    LOG(INFO) << "DoFetchNextSeq - rsp: " << rsp->ToString();
-    if (rsp->GetPackageType() == Package::RPC_OK) {
-      auto seq_rsp = ToApiRpcOk<zproto::SequenceRsp>(rsp);
-      LOG(INFO) << "DoFetchNextSeq - SequenceRsp: " << seq_rsp->ToString();
-    }
-  });
-  
+  ZRpcClientCall<zproto::SequenceRsp>("seq_client",
+                                      MakeRpcRequest(get_current_sequence_req),
+                                      [] (std::shared_ptr<ApiRpcOk<zproto::SequenceRsp>> seq_rsp,
+                                          ProtoRpcResponsePtr rpc_error) -> int {
+                                        if (rpc_error) {
+                                          LOG(ERROR) << "DoGetCurrentSeq - rpc_error: " << rpc_error->ToString();
+                                        } else {
+                                          LOG(INFO) << "DoGetCurrentSeq - seq_rsp: " << seq_rsp->ToString();
+                                        }
+                                        return 0;
+                                      });
   return 0;
 }
 
-int DoGetCurrentSeq(const std::vector<folly::StringPiece>& command_lines) {
-  uint32_t user_id = 0;
-  try {
-    user_id = folly::to<uint32_t>(command_lines[1]);
-  } catch (...) {
-    LOG(ERROR) << "DoGetCurrentSeq - user_id invalid, not a number: " << command_lines[1];
+int DoFetchNextSeqList(const std::vector<folly::StringPiece>& command_lines) {
+  zproto::FetchNextSequenceListReq fetch_next_sequence_list_req;
+  for (size_t i=1; i<command_lines.size(); ++i) {
+    uint32_t id = 0;
+    try {
+      id = folly::to<uint32_t>(command_lines[i]);
+    } catch (...) {
+      LOG(ERROR) << "DoFetchNextSeqList - user_id invalid, not a number: " << command_lines[1];
+      continue;
+    }
+    fetch_next_sequence_list_req.add_id_list(id);
+  }
+  if (fetch_next_sequence_list_req.id_list_size() == 0) {
+    LOG(ERROR) << "DoFetchNextSeqList - invalid fetch_next_sequence_list_req's id_list!!!";
     return 0;
   }
   
-  zproto::GetCurrentSequenceReq get_current_sequence_req;
-  get_current_sequence_req.set_user_id(user_id);
-  
-  auto req = MakeRpcRequest(get_current_sequence_req);
-  LOG(INFO) << "DoGetCurrentSeq - req: " << req->ToString();
-  ZRpcUtil::DoClientCall("seq_client", req)
-  .within(std::chrono::milliseconds(5000))
-  .then([](ProtoRpcResponsePtr rsp) {
-    LOG(INFO) << "DoGetCurrentSeq - rsp: " << rsp->ToString();
-    if (rsp->GetPackageType() == Package::RPC_OK) {
-      auto seq_rsp = ToApiRpcOk<zproto::SequenceRsp>(rsp);
-      LOG(INFO) << "DoGetCurrentSeq - SequenceRsp: " << seq_rsp->ToString();
-    }
-  });
-  
+  ZRpcClientCall<zproto::SequenceListRsp>("seq_client",
+                                      MakeRpcRequest(fetch_next_sequence_list_req),
+                                      [] (std::shared_ptr<ApiRpcOk<zproto::SequenceListRsp>> seqs_rsp,
+                                          ProtoRpcResponsePtr rpc_error) -> int {
+                                        if (rpc_error) {
+                                          LOG(ERROR) << "DoFetchNextSeqList - rpc_error: " << rpc_error->ToString();
+                                        } else {
+                                          LOG(INFO) << "DoFetchNextSeqList - seq_rsp: " << seqs_rsp->ToString();
+                                        }
+                                        return 0;
+                                      });
   return 0;
 }
 
+int DoGetCurrentSeqList(const std::vector<folly::StringPiece>& command_lines) {
+  zproto::GetCurrentSequenceListReq get_current_sequence_list_req;
+  for (size_t i=1; i<command_lines.size(); ++i) {
+    uint32_t id = 0;
+    try {
+      id = folly::to<uint32_t>(command_lines[i]);
+    } catch (...) {
+      LOG(ERROR) << "DoGetCurrentSeqList - user_id invalid, not a number: " << command_lines[1];
+      continue;
+    }
+    get_current_sequence_list_req.add_id_list(id);
+  }
+  if (get_current_sequence_list_req.id_list_size() == 0) {
+    LOG(ERROR) << "DoGetCurrentSeqList - invalid fetch_next_sequence_list_req's id_list!!!";
+    return 0;
+  }
+  
+  ZRpcClientCall<zproto::SequenceListRsp>("seq_client",
+                                          MakeRpcRequest(get_current_sequence_list_req),
+                                          [] (std::shared_ptr<ApiRpcOk<zproto::SequenceListRsp>> seqs_rsp,
+                                              ProtoRpcResponsePtr rpc_error) -> int {
+                                            if (rpc_error) {
+                                              LOG(ERROR) << "DoGetCurrentSeqList - rpc_error: " << rpc_error->ToString();
+                                            } else {
+                                              LOG(INFO) << "DoGetCurrentSeqList - seq_rsp: " << seqs_rsp->ToString();
+                                            }
+                                            return 0;
+                                          });
+  return 0;
+}
 
 int DoQuit(const std::vector<folly::StringPiece>& command_lines) {
   // exit(0);
@@ -100,8 +156,10 @@ int DoQuit(const std::vector<folly::StringPiece>& command_lines) {
 
 CmdEntry g_cmds[] = {
   // login/logout
-  {"fetchnextseq", "fetchnextseq user_id", 2, 0, DoFetchNextSeq},
-  {"getcurrentseq", "getcurrentseq user_id", 2, 0, DoGetCurrentSeq},
+  {"fetch_next_seq", "fetch_next_seq id", 2, 2, DoFetchNextSeq},
+  {"get_current_seq", "get_current_seq id", 2, 2, DoGetCurrentSeq},
+  {"fetch_next_seq_list", "fetch_next_seq_list id...", 2, 10, DoFetchNextSeqList},
+  {"get_current_seq_list", "get_current_seq_list id...", 2, 10, DoGetCurrentSeqList},
   // quit
   {"quit", "quit", 1, 0, DoQuit}
 };

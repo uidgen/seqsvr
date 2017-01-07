@@ -29,6 +29,8 @@ public:
   
   static ProtoRpcResponsePtr FetchNextSequence(RpcRequestPtr request);
   static ProtoRpcResponsePtr GetCurrentSequence(RpcRequestPtr request);
+  static ProtoRpcResponsePtr FetchNextSequenceList(RpcRequestPtr request);
+  static ProtoRpcResponsePtr GetCurrentSequenceList(RpcRequestPtr request);
 };
 
 #endif // SEQSVR_RPC_SEQ_DISPATCHER_H_

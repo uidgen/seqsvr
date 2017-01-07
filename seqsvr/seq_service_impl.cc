@@ -25,14 +25,35 @@
 #include "seqsvr/sequence_manager.h"
 
 int SeqServiceImpl::FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) {
-  auto seq = SequenceManager::GetInstance()->FetchNextSequence(request.user_id());
+  auto seq = SequenceManager::GetInstance()->FetchNextSequence(request.id());
   response->set_sequence(seq);
   return 0;
 }
 
 int SeqServiceImpl::GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) {
-  auto seq = SequenceManager::GetInstance()->GetCurrentSequence(request.user_id());
+  auto seq = SequenceManager::GetInstance()->GetCurrentSequence(request.id());
   response->set_sequence(seq);
   return 0;
 }
 
+int SeqServiceImpl::FetchNextSequenceList(const zproto::FetchNextSequenceListReq& request, zproto::SequenceListRsp* response) {
+  auto seq_mgr = SequenceManager::GetInstance();
+  for (int i=0; i<request.id_list_size(); ++i) {
+    auto seq = seq_mgr->FetchNextSequence(request.id_list(i));
+    auto id_seq = response->add_sequence_list();
+    id_seq->set_id(request.id_list(i));
+    id_seq->set_sequence(seq);
+  }
+  return 0;
+}
+
+int SeqServiceImpl::GetCurrentSequenceList(const zproto::GetCurrentSequenceListReq& request, zproto::SequenceListRsp* response) {
+  auto seq_mgr = SequenceManager::GetInstance();
+  for (int i=0; i<request.id_list_size(); ++i) {
+    auto seq = seq_mgr->GetCurrentSequence(request.id_list(i));
+    auto id_seq = response->add_sequence_list();
+    id_seq->set_id(request.id_list(i));
+    id_seq->set_sequence(seq);
+  }
+  return 0;
+}

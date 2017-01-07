@@ -28,6 +28,8 @@ public:
   
   int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) override;
   int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) override;
+  int FetchNextSequenceList(const zproto::FetchNextSequenceListReq& request, zproto::SequenceListRsp* response) override;
+  int GetCurrentSequenceList(const zproto::GetCurrentSequenceListReq& request, zproto::SequenceListRsp* response) override;
 };
 
 #endif

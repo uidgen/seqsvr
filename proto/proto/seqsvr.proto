@@ -26,13 +26,13 @@ option optimize_for = CODE_SIZE;
 // 获取下一个Seq
 // GetNextSequenceReq -> SequenceRsp
 message FetchNextSequenceReq {
-  uint32 user_id = 1;
+  uint32 id = 1;
 }
 
 // 查询当前Seq
 // GetCurrentSequenceReq -> SequenceRsp
 message GetCurrentSequenceReq {
-  uint32 user_id = 1;
+  uint32 id = 1;
 }
 
 // 返回
@@ -40,3 +40,23 @@ message SequenceRsp {
   uint64 sequence = 1;
 }
 
+// FetchNextSequenceListReq -> SequenceListRsp
+message FetchNextSequenceListReq {
+  repeated uint32 id_list = 1;
+}
+
+// 查询当前Seq
+// GetCurrentSequenceListReq -> SequenceListRsp
+message GetCurrentSequenceListReq {
+  repeated uint32 id_list = 1;
+}
+
+message IdSeq {
+  uint32 id = 1;
+  uint64 sequence = 2;
+}
+
+// 返回
+message SequenceListRsp {
+  repeated IdSeq sequence_list = 1;
+}

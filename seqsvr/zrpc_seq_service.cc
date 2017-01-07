@@ -23,11 +23,21 @@
 
 
 int ZRpcSeqService::FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) {
-  LOG(ERROR) << "OnZRpcTest - OnZRpcTest unimplemented";
+  LOG(ERROR) << "FetchNextSequence - FetchNextSequence unimplemented";
   return -1;
 }
 
 int ZRpcSeqService::GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) {
-  LOG(ERROR) << "OnZRpcTest - OnZRpcTest unimplemented";
+  LOG(ERROR) << "GetCurrentSequence - GetCurrentSequence unimplemented";
+  return -1;
+}
+
+int ZRpcSeqService::FetchNextSequenceList(const zproto::FetchNextSequenceListReq& request, zproto::SequenceListRsp* response) {
+  LOG(ERROR) << "FetchNextSequenceList - FetchNextSequenceList unimplemented";
+  return -1;
+}
+
+int ZRpcSeqService::GetCurrentSequenceList(const zproto::GetCurrentSequenceListReq& request, zproto::SequenceListRsp* response) {
+  LOG(ERROR) << "GetCurrentSequenceList - GetCurrentSequenceList unimplemented";
   return -1;
 }

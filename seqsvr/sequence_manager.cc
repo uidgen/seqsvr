@@ -98,16 +98,19 @@ void SequenceManager::Initialize(const std::string& filepath) {
 }
 
 SequenceManager::~SequenceManager() {
-  folly::closeNoInt(section_fd_);
   if (section_max_seqs_) {
     delete [] section_max_seqs_;
   }
+  
   if (seqs_) {
     delete [] seqs_;
   }
+  
   if (section_max_seqs_mapping_) {
     delete section_max_seqs_mapping_;
   }
+  
+  folly::closeNoInt(section_fd_);
 }
 
 uint64_t SequenceManager::GetCurrentSequence(uint32_t uid) {

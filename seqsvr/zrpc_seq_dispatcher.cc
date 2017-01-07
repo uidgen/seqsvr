@@ -33,6 +33,8 @@ static ZRpcSeqDispatcher g_rpc_seq_dispatcher;
 ZRpcSeqDispatcher::ZRpcSeqDispatcher() {
   ZRpcUtil::Register("zproto.FetchNextSequenceReq", ZRpcSeqDispatcher::FetchNextSequence);
   ZRpcUtil::Register("zproto.GetCurrentSequenceReq", ZRpcSeqDispatcher::GetCurrentSequence);
+  ZRpcUtil::Register("zproto.FetchNextSequenceListReq", ZRpcSeqDispatcher::FetchNextSequenceList);
+  ZRpcUtil::Register("zproto.GetCurrentSequenceListReq", ZRpcSeqDispatcher::GetCurrentSequenceList);
 }
 
 ProtoRpcResponsePtr ZRpcSeqDispatcher::FetchNextSequence(RpcRequestPtr request) {
@@ -59,4 +61,30 @@ ProtoRpcResponsePtr ZRpcSeqDispatcher::GetCurrentSequence(RpcRequestPtr request)
   service_impl.GetCurrentSequence(get_current_sequece_req, &sequence_rsp);
   
   return MakeRpcOK(sequence_rsp);
+}
+
+ProtoRpcResponsePtr ZRpcSeqDispatcher::FetchNextSequenceList(RpcRequestPtr request) {
+  CAST_RPC_REQUEST(FetchNextSequenceListReq, fetch_next_sequece_list_req);
+  LOG(INFO) << "FetchNextSequenceList - [" << request->ToString() << "], "
+            << fetch_next_sequece_list_req.Utf8DebugString();
+  
+  zproto::SequenceListRsp sequence_list_rsp;
+  
+  SeqServiceImpl service_impl;
+  service_impl.FetchNextSequenceList(fetch_next_sequece_list_req, &sequence_list_rsp);
+  
+  return MakeRpcOK(sequence_list_rsp);
+}
+
+ProtoRpcResponsePtr ZRpcSeqDispatcher::GetCurrentSequenceList(RpcRequestPtr request) {
+  CAST_RPC_REQUEST(GetCurrentSequenceListReq, get_current_sequece_list_req);
+  LOG(INFO) << "GetCurrentSequenceList - [" << request->ToString() << "], "
+            << get_current_sequece_list_req.Utf8DebugString();
+  
+  zproto::SequenceListRsp sequence_list_rsp;
+  
+  SeqServiceImpl service_impl;
+  service_impl.GetCurrentSequenceList(get_current_sequece_list_req, &sequence_list_rsp);
+  
+  return MakeRpcOK(sequence_list_rsp);
 }
