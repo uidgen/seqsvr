@@ -33,6 +33,6 @@ set (SRC_LIST
   ../proto/proto/seqsvr.proto
   )
 
-add_executable (seq_server ${SRC_LIST})
-target_link_libraries (seq_server net base protobuf)
+add_executable (seqsvr ${SRC_LIST})
+target_link_libraries (seqsvr net base protobuf)
 

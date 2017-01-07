@@ -18,6 +18,8 @@
 #ifndef SEQSVR_SEQUENCE_MANAGER_H_
 #define SEQSVR_SEQUENCE_MANAGER_H_
 
+#include <mutex>
+
 #include <folly/MemoryMapping.h>
 #include <folly/Singleton.h>
 
@@ -33,16 +35,17 @@
 #define MAX_UID_MEM_SIZE      0xffffff<<3   // 2^24
 #else
 #define SECTION_BITS_SIZE     17            //
-#define SECTION_SIZE          0x1ffff         //
+#define SECTION_SIZE          0x1ffff       //
 #define SECTION_SLOT_SIZE     0x7fff        // 2^15
 #define SECTION_SLOT_MEM_SIZE 0x7fff<<3     // 2^15*8
 #define MAX_UID_SIZE          0xffffffff    // 2^32
-#define MAX_UID_MEM_SIZE      0xffffffff<<3// 2^32*8
+#define MAX_UID_MEM_SIZE      0xffffffff<<3 // 2^32*8
 
 #endif
 
-#define MAX_SEQ_STEP  10000
+// #define SET_SIZE      100
 
+// TODO(@benqi): 单机模拟set的allocsvr和storesvr
 class SequenceManager {
 public:
   ~SequenceManager();
@@ -60,10 +63,12 @@ private:
   
   int section_fd_ {-1};
   uint64_t* section_max_seqs_ {nullptr};
-  uint64_t* seqs_ {nullptr};
+  uint64_t* cur_seqs_ {nullptr};
   
   folly::MemoryMapping* section_max_seqs_mapping_ {nullptr};
   folly::Range<uint64_t*> mapping_mem_;
+  
+  std::mutex mutex_;
 };
 
 #endif

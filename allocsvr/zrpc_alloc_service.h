@@ -17,31 +17,20 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#include "seqsvr/seq_server.h"
-#include "seqsvr/sequence_manager.h"
+#ifndef	ALLOCSVR_ZRPC_ALLOC_SERVICE_H_
+#define	ALLOCSVR_ZRPC_ALLOC_SERVICE_H_
 
-bool SeqServer::Initialize() {
-  SequenceManager::GetInstance()->Initialize("/tmp/seq.dat");
-  
-  RegisterService("seq_server", "rpc_server", "zrpc");
-  BaseServer::Initialize();
-  
-#if 0
-  // one
-  timer_manager_->ScheduleOneShotTimeout([]() {
-    LOG(INFO) << "ScheduleOneShotTimeout!!!!";
-  }, 1000);
-  
-  // once
-  timer_manager_->ScheduleRepeatingTimeout([]() {
-    static int i = 0;
-    LOG(INFO) << "ScheduleRepeatingTimeout - " << i++;
-  }, 1000);
-#endif
-  
-  return true;
-}
+#include "proto/cc/seqsvr.pb.h"
 
-int main(int argc, char* argv[]) {
-  return nebula::DoMain<SeqServer>(argc, argv);
-}
+class ZRpcAllocService {
+public:
+  virtual ~ZRpcAllocService() = default;
+  
+  virtual int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response);
+  virtual int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response);
+  virtual int FetchNextSequenceList(const zproto::FetchNextSequenceListReq& request, zproto::SequenceListRsp* response);
+  virtual int GetCurrentSequenceList(const zproto::GetCurrentSequenceListReq& request, zproto::SequenceListRsp* response);
+};
+
+#endif // ALLOCSVR_ZRPC_ALLOC_SERVICE_H_
+

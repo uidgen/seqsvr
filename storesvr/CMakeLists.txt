@@ -17,17 +17,24 @@
 include_directories(. .. ../../nebula)
 
 set (SRC_LIST
-  client.cc
-  client.h
-  client_command_handler.cc
-  client_command_handler.h
-  ../../nebula/nebula/base/readline_gets.cc
-  ../../nebula/nebula/base/readline_gets.h
+  ../seqsvr/section.h
+  ../seqsvr/set.h
+  store_server.cc
+  store_server.h
+  storesvr_manager.cc
+  storesvr_manager.h
+  zrpc_store_dispatcher.cc
+  zrpc_store_dispatcher.h
+  zrpc_store_service.cc
+  zrpc_store_service.h
+  store_service_impl.cc
+  store_service_impl.h
+
   ../proto/cc/seqsvr.pb.cc
   ../proto/cc/seqsvr.pb.h
-  ../seqsvr/message_handler_util.h
+  ../proto/proto/seqsvr.proto
   )
 
-add_executable (client ${SRC_LIST})
-target_link_libraries (client net base protobuf readline)
+add_executable (storesvr ${SRC_LIST})
+target_link_libraries (storesvr net base protobuf)
 

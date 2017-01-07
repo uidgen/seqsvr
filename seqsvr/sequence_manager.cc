@@ -21,6 +21,12 @@
 #include <folly/FileUtil.h>
 #include <folly/Range.h>
 
+/*
+ 1. 内存中储存最近一个分配出去的sequence：cur_seq，以及分配上限：max_seq
+ 2. 分配sequence时，将cur_seq++，同时与分配上限max_seq比较：
+    如果cur_seq > max_seq，将分配上限提升一个步长max_seq += step，并持久化max_seq
+ 3. 重启时，读出持久化的max_seq，赋值给cur_seq
+ */
 // folly::Singleton<SequenceManager> ;
 static folly::Singleton<SequenceManager> g_sequence_manager;
 
@@ -66,23 +72,22 @@ void SequenceManager::Initialize(const std::string& filepath) {
     folly::readFull(section_fd_, section_max_seqs_, SECTION_SLOT_MEM_SIZE);
     lseek(section_fd_, 0, SEEK_SET);
   } else {
-    // 第一次加载设置最大值为步长
-    folly::Range<uint64_t*> r(section_max_seqs_, SECTION_SLOT_SIZE);
-    std::fill(r.begin() , r.end(), MAX_SEQ_STEP);
+    // 不设置最大值为步长
+    memset(section_max_seqs_, 0, SECTION_SLOT_MEM_SIZE);
   }
 
   // 3. 生成seqs_
-  seqs_ = new uint64_t[MAX_UID_SIZE];
-  CHECK(section_max_seqs_) << "Alloc seqs_ error!";
+  cur_seqs_ = new uint64_t[MAX_UID_SIZE];
+  CHECK(section_max_seqs_) << "Alloc cur_seqs_ error!";
   // 由section_max_seqs生成seqs值
   if (is_first) {
     // 初始化为0
-    memset(seqs_, 0, MAX_UID_MEM_SIZE);
+    memset(cur_seqs_, 0, MAX_UID_MEM_SIZE);
   } else {
+    // 将cur_seq设置为max_seq
     for (int i=0; i<SECTION_SLOT_SIZE; ++i) {
-      folly::Range<uint64_t*> r(seqs_+i*SECTION_SLOT_SIZE, SECTION_SIZE);
+      folly::Range<uint64_t*> r(cur_seqs_+i*SECTION_SLOT_SIZE, SECTION_SIZE);
       std::fill(r.begin(), r.end(), section_max_seqs_[i]);
-      section_max_seqs_[i] = section_max_seqs_[i] + MAX_SEQ_STEP;
     }
   }
 
@@ -102,8 +107,8 @@ SequenceManager::~SequenceManager() {
     delete [] section_max_seqs_;
   }
   
-  if (seqs_) {
-    delete [] seqs_;
+  if (cur_seqs_) {
+    delete [] cur_seqs_;
   }
   
   if (section_max_seqs_mapping_) {
@@ -118,7 +123,8 @@ uint64_t SequenceManager::GetCurrentSequence(uint32_t uid) {
   DCHECK(uid<MAX_UID_SIZE);
 #endif
   
-  return seqs_[uid];
+  std::lock_guard<std::mutex> g(mutex_);
+  return cur_seqs_[uid];
 }
 
 uint64_t SequenceManager::FetchNextSequence(uint32_t uid) {
@@ -128,7 +134,8 @@ uint64_t SequenceManager::FetchNextSequence(uint32_t uid) {
   
   auto idx = uid >> SECTION_BITS_SIZE;
   
-  auto seq = ++seqs_[uid];
+  std::lock_guard<std::mutex> g(mutex_);
+  auto seq = ++cur_seqs_[uid];
   if (seq > section_max_seqs_[idx]) {
     mapping_mem_[idx] = ++section_max_seqs_[idx];
   }

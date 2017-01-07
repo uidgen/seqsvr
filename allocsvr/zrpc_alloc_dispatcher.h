@@ -17,31 +17,20 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#include "seqsvr/seq_server.h"
-#include "seqsvr/sequence_manager.h"
+#ifndef	ALLOCSVR_ZRPC_ALLCO_DISPATCHER_H_
+#define	ALLOCSVR_ZRPC_ALLCO_DISPATCHER_H_
 
-bool SeqServer::Initialize() {
-  SequenceManager::GetInstance()->Initialize("/tmp/seq.dat");
-  
-  RegisterService("seq_server", "rpc_server", "zrpc");
-  BaseServer::Initialize();
-  
-#if 0
-  // one
-  timer_manager_->ScheduleOneShotTimeout([]() {
-    LOG(INFO) << "ScheduleOneShotTimeout!!!!";
-  }, 1000);
-  
-  // once
-  timer_manager_->ScheduleRepeatingTimeout([]() {
-    static int i = 0;
-    LOG(INFO) << "ScheduleRepeatingTimeout - " << i++;
-  }, 1000);
-#endif
-  
-  return true;
-}
+#include "nebula/net/zproto/zproto_package_data.h"
 
-int main(int argc, char* argv[]) {
-  return nebula::DoMain<SeqServer>(argc, argv);
-}
+class ZRpcAllocDispatcher {
+public:
+  ZRpcAllocDispatcher();
+  ~ZRpcAllocDispatcher() = default;
+  
+  static ProtoRpcResponsePtr FetchNextSequence(RpcRequestPtr request);
+  static ProtoRpcResponsePtr GetCurrentSequence(RpcRequestPtr request);
+  static ProtoRpcResponsePtr FetchNextSequenceList(RpcRequestPtr request);
+  static ProtoRpcResponsePtr GetCurrentSequenceList(RpcRequestPtr request);
+};
+
+#endif // ALLOCSVR_ZRPC_ALLCO_DISPATCHER_H_

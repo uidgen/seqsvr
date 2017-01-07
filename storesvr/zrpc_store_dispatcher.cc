@@ -17,31 +17,19 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#include "seqsvr/seq_server.h"
-#include "seqsvr/sequence_manager.h"
+#include "storesvr/zrpc_store_dispatcher.h"
 
-bool SeqServer::Initialize() {
-  SequenceManager::GetInstance()->Initialize("/tmp/seq.dat");
-  
-  RegisterService("seq_server", "rpc_server", "zrpc");
-  BaseServer::Initialize();
-  
-#if 0
-  // one
-  timer_manager_->ScheduleOneShotTimeout([]() {
-    LOG(INFO) << "ScheduleOneShotTimeout!!!!";
-  }, 1000);
-  
-  // once
-  timer_manager_->ScheduleRepeatingTimeout([]() {
-    static int i = 0;
-    LOG(INFO) << "ScheduleRepeatingTimeout - " << i++;
-  }, 1000);
-#endif
-  
-  return true;
+#include "storesvr/store_service_impl.h"
+#include "nebula/net/rpc/zrpc_service_util.h"
+
+#include "proto/cc/seqsvr.pb.h"
+#include "nebula/net/zproto/api_message_box.h"
+
+
+// #include "nebula/net/zproto/api_message_box.h"
+
+static ZRpcStoreDispatcher g_rpc_store_dispatcher;
+
+ZRpcStoreDispatcher::ZRpcStoreDispatcher() {
 }
 
-int main(int argc, char* argv[]) {
-  return nebula::DoMain<SeqServer>(argc, argv);
-}

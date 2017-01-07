@@ -17,13 +17,10 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#include "seqsvr/seq_server.h"
-#include "seqsvr/sequence_manager.h"
+#include "storesvr/store_server.h"
 
-bool SeqServer::Initialize() {
-  SequenceManager::GetInstance()->Initialize("/tmp/seq.dat");
-  
-  RegisterService("seq_server", "rpc_server", "zrpc");
+bool StoreServer::Initialize() {
+  RegisterService("storesvr", "rpc_server", "zrpc");
   BaseServer::Initialize();
   
 #if 0
@@ -43,5 +40,5 @@ bool SeqServer::Initialize() {
 }
 
 int main(int argc, char* argv[]) {
-  return nebula::DoMain<SeqServer>(argc, argv);
+  return nebula::DoMain<StoreServer>(argc, argv);
 }
