@@ -30,9 +30,9 @@
 
 bool Client::Initialize() {
   // 注册服务
-  RegisterService("seqsvr", "rpc_client", "zrpc");
+  // RegisterService("seq_client", "rpc_client", "zrpc");
   // 注册服务
-  RegisterService("allocsvr", "rpc_client", "zrpc");
+  RegisterService("alloc_client", "rpc_client", "zrpc");
 
   return BaseServer::Initialize();
 }

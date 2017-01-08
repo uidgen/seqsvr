@@ -70,7 +70,5 @@ ${PROXYGEN_LIBRARYDIR}
 #set(CMAKE_EXE_LINKER_FLAGS "-lpthread -lrt -ldl")
 
 add_subdirectory(nebula/nebula)
-add_subdirectory(seqsvr)
-add_subdirectory(allocsvr)
-add_subdirectory(storesvr)
 add_subdirectory(client)
+add_subdirectory(seqsvr)

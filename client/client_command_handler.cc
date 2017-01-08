@@ -22,7 +22,7 @@
 #include "nebula/base/time_util.h"
 // #include "nebula/base/id_util.h"
 // #include "nebula/net/rpc/zrpc_service_util.h"
-#include "seqsvr/message_handler_util.h"
+#include "base/message_handler_util.h"
 
 typedef int (*ClientCommandHandlerFunc)(const std::vector<folly::StringPiece>&);
 
@@ -47,7 +47,7 @@ int DoFetchNextSeq(const std::vector<folly::StringPiece>& command_lines) {
   zproto::FetchNextSequenceReq fetch_next_sequence_req;
   fetch_next_sequence_req.set_id(id);
   
-  ZRpcClientCall<zproto::SequenceRsp>("allocsvr",
+  ZRpcClientCall<zproto::SequenceRsp>("alloc_client",
                                  MakeRpcRequest(fetch_next_sequence_req),
                                  [] (std::shared_ptr<ApiRpcOk<zproto::SequenceRsp>> seq_rsp,
                                      ProtoRpcResponsePtr rpc_error) -> int {
@@ -73,7 +73,7 @@ int DoGetCurrentSeq(const std::vector<folly::StringPiece>& command_lines) {
   zproto::GetCurrentSequenceReq get_current_sequence_req;
   get_current_sequence_req.set_id(id);
   
-  ZRpcClientCall<zproto::SequenceRsp>("allocsvr",
+  ZRpcClientCall<zproto::SequenceRsp>("alloc_client",
                                       MakeRpcRequest(get_current_sequence_req),
                                       [] (std::shared_ptr<ApiRpcOk<zproto::SequenceRsp>> seq_rsp,
                                           ProtoRpcResponsePtr rpc_error) -> int {
@@ -104,7 +104,7 @@ int DoFetchNextSeqList(const std::vector<folly::StringPiece>& command_lines) {
     return 0;
   }
   
-  ZRpcClientCall<zproto::SequenceListRsp>("allocsvr",
+  ZRpcClientCall<zproto::SequenceListRsp>("alloc_client",
                                       MakeRpcRequest(fetch_next_sequence_list_req),
                                       [] (std::shared_ptr<ApiRpcOk<zproto::SequenceListRsp>> seqs_rsp,
                                           ProtoRpcResponsePtr rpc_error) -> int {
@@ -135,7 +135,7 @@ int DoGetCurrentSeqList(const std::vector<folly::StringPiece>& command_lines) {
     return 0;
   }
   
-  ZRpcClientCall<zproto::SequenceListRsp>("allocsvr",
+  ZRpcClientCall<zproto::SequenceListRsp>("alloc_client",
                                           MakeRpcRequest(get_current_sequence_list_req),
                                           [] (std::shared_ptr<ApiRpcOk<zproto::SequenceListRsp>> seqs_rsp,
                                               ProtoRpcResponsePtr rpc_error) -> int {

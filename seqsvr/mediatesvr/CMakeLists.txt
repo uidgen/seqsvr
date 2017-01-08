@@ -14,20 +14,19 @@
 # limitations under the License.
 #
 
-include_directories(. .. ../seqsvr ../../nebula)
+include_directories(. .. ../../nebula)
 
 set (SRC_LIST
-  client.cc
-  client.h
-  client_command_handler.cc
-  client_command_handler.h
-  ../../nebula/nebula/base/readline_gets.cc
-  ../../nebula/nebula/base/readline_gets.h
-  ../seqsvr/proto/cc/seqsvr.pb.cc
-  ../seqsvr/proto/cc/seqsvr.pb.h
-  ../seqsvr/base/message_handler_util.h
+  mediate_server.cc
+  mediate_server.h
+  mediate_handler.cc
+  mediate_handler.h
+
+  ../proto/cc/seqsvr.pb.cc
+  ../proto/cc/seqsvr.pb.h
+  ../proto/proto/seqsvr.proto
   )
 
-add_executable (client ${SRC_LIST})
-target_link_libraries (client net base protobuf readline)
+add_executable (mediatesvr ${SRC_LIST})
+target_link_libraries (mediatesvr net base protobuf)
 

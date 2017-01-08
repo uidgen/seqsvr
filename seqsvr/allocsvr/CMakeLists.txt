@@ -14,20 +14,31 @@
 # limitations under the License.
 #
 
-include_directories(. .. ../seqsvr ../../nebula)
+include_directories(. .. ../../nebula)
 
 set (SRC_LIST
-  client.cc
-  client.h
-  client_command_handler.cc
-  client_command_handler.h
-  ../../nebula/nebula/base/readline_gets.cc
-  ../../nebula/nebula/base/readline_gets.h
-  ../seqsvr/proto/cc/seqsvr.pb.cc
-  ../seqsvr/proto/cc/seqsvr.pb.h
-  ../seqsvr/base/message_handler_util.h
+  ../base/section.h
+  ../base/set.h
+  allocsvr_manager.cc
+  allocsvr_manager.h
+  alloc_server.cc
+  alloc_server.h
+  zrpc_alloc_dispatcher.cc
+  zrpc_alloc_dispatcher.h
+  zrpc_alloc_service.cc
+  zrpc_alloc_service.h
+  alloc_service_impl.cc
+  alloc_service_impl.h
+
+  ../proto/cc/seqsvr.pb.cc
+  ../proto/cc/seqsvr.pb.h
+  ../proto/proto/seqsvr.proto
+  ../base/message_handler_util.h
+
+  ../storesvr/storesvr_manager.cc
+  ../storesvr/storesvr_manager.h
   )
 
-add_executable (client ${SRC_LIST})
-target_link_libraries (client net base protobuf readline)
+add_executable (allocsvr ${SRC_LIST})
+target_link_libraries (allocsvr net base protobuf)
 
