@@ -19,6 +19,8 @@ include_directories(. .. ../../nebula)
 set (SRC_LIST
   ../base/section.h
   ../base/set.h
+  ../base/router_table.cc
+  ../base/router_table.h
   allocsvr_manager.cc
   allocsvr_manager.h
   alloc_server.cc
