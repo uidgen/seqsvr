@@ -35,15 +35,23 @@ std::shared_ptr<StoreSvrManager> StoreSvrManager::GetInstance() {
 }
 
 bool StoreSvrManager::Initialize(uint32_t set_id, const std::string& filepath) {
-  set_id_ = set_id;
+  boost::filesystem::path f2(filepath);
+  if (!boost::filesystem::exists(f2)) {
+    LOG(ERROR) << "Initialize - store db's filepath not exist!! " << filepath;
+    return false;
+  }
   
+  set_id_ = set_id;
+  seq_file_path_ = filepath + "/seqdb.dat";
+  route_table_file_path_ = filepath + "/router.dat";
+
   // 是不是第一次
   bool is_first = false;
   
   // 1. 文件不存在，则创建文件
-  boost::filesystem::path f(filepath);
+  boost::filesystem::path f(seq_file_path_);
   if (!boost::filesystem::exists(f)) {
-    section_fd_ = folly::openNoInt(filepath.c_str(), O_CREAT | O_RDWR);
+    section_fd_ = folly::openNoInt(seq_file_path_.c_str(), O_CREAT | O_RDWR);
     PCHECK(section_fd_!=-1) << "";
     PCHECK(folly::ftruncateNoInt(section_fd_, kSectionSlotMemSize) == 0) << kSectionSlotMemSize;
     
@@ -53,7 +61,7 @@ bool StoreSvrManager::Initialize(uint32_t set_id, const std::string& filepath) {
     
     auto sz = boost::filesystem::file_size(f);
     if (sz == kSectionSlotMemSize) {
-      section_fd_ = folly::openNoInt(filepath.c_str(), O_RDWR);
+      section_fd_ = folly::openNoInt(seq_file_path_.c_str(), O_RDWR);
     } else {
       // 直接退出
       LOG(FATAL) << "section' file size invalid, sz = " << sz;
@@ -76,6 +84,17 @@ bool StoreSvrManager::Initialize(uint32_t set_id, const std::string& filepath) {
   
   if (is_first) {
     memset(mapping_mem_.data(), 0, mapping_mem_.size());
+  }
+  
+  f = boost::filesystem::path(route_table_file_path_);
+  if (boost::filesystem::exists(f)) {
+    std::string data;
+    if (folly::readFile(route_table_file_path_.c_str(), data)) {
+      if(!cache_router_.ParseFromString(data)) {
+        LOG(ERROR) << "Initialize - router data invalid!!!!!";
+        cache_router_.Clear();
+      }
+    }
   }
   
   inited_ = true;
@@ -113,4 +132,18 @@ uint64_t StoreSvrManager::SetSectionsData(uint32_t set_id, uint32_t alloc_id, ui
     rv = 0;
   }
   return rv;
+}
+
+bool StoreSvrManager::SaveCacheRouter(const zproto::Router& router) {
+  std::string data;
+  if (!cache_router_.SerializeToString(&data)) {
+    LOG(ERROR) << "SaveCacheRouter - cache_router_ serialize error!!!!";
+    return false;
+  }
+  
+  if (!folly::writeFile(data, route_table_file_path_.c_str())) {
+    LOG(WARNING) << "SaveCacheRouter - write route_table error!!!";
+  }
+  cache_router_ = router;
+  return true;
 }

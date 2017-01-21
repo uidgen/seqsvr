@@ -37,19 +37,717 @@ void protobuf_InitDefaults_seqsvr_2eproto();
 void protobuf_AssignDesc_seqsvr_2eproto();
 void protobuf_ShutdownFile_seqsvr_2eproto();
 
+class AllocSvrEntry;
 class FetchNextSequenceListReq;
 class FetchNextSequenceReq;
 class GetCurrentSequenceListReq;
 class GetCurrentSequenceReq;
+class GetRouteTableReq;
+class GetRouteTableRsp;
 class IdSeq;
+class IpPort;
 class LoadMaxSeqsDataReq;
 class LoadMaxSeqsDataRsp;
+class Range;
+class Router;
 class SaveMaxSeqReq;
 class SaveMaxSeqRsp;
 class SequenceListRsp;
 class SequenceRsp;
+class SetEntry;
+class UpdateRouteTableReq;
+class UpdateRouteTableRsp;
 
 // ===================================================================
+
+class IpPort : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.IpPort) */ {
+ public:
+  IpPort();
+  virtual ~IpPort();
+
+  IpPort(const IpPort& from);
+
+  inline IpPort& operator=(const IpPort& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const IpPort& default_instance();
+
+  static const IpPort* internal_default_instance();
+
+  void Swap(IpPort* other);
+
+  // implements Message ----------------------------------------------
+
+  inline IpPort* New() const { return New(NULL); }
+
+  IpPort* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(IpPort* other);
+  void UnsafeMergeFrom(const IpPort& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string host = 1;
+  void clear_host();
+  static const int kHostFieldNumber = 1;
+  const ::std::string& host() const;
+  void set_host(const ::std::string& value);
+  void set_host(const char* value);
+  void set_host(const char* value, size_t size);
+  ::std::string* mutable_host();
+  ::std::string* release_host();
+  void set_allocated_host(::std::string* host);
+
+  // optional uint32 port = 2;
+  void clear_port();
+  static const int kPortFieldNumber = 2;
+  ::google::protobuf::uint32 port() const;
+  void set_port(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:zproto.IpPort)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr host_;
+  ::google::protobuf::uint32 port_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<IpPort> IpPort_default_instance_;
+
+// -------------------------------------------------------------------
+
+class Range : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.Range) */ {
+ public:
+  Range();
+  virtual ~Range();
+
+  Range(const Range& from);
+
+  inline Range& operator=(const Range& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Range& default_instance();
+
+  static const Range* internal_default_instance();
+
+  void Swap(Range* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Range* New() const { return New(NULL); }
+
+  Range* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Range* other);
+  void UnsafeMergeFrom(const Range& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 id = 1;
+  void clear_id();
+  static const int kIdFieldNumber = 1;
+  ::google::protobuf::uint32 id() const;
+  void set_id(::google::protobuf::uint32 value);
+
+  // optional uint32 size = 2;
+  void clear_size();
+  static const int kSizeFieldNumber = 2;
+  ::google::protobuf::uint32 size() const;
+  void set_size(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:zproto.Range)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 id_;
+  ::google::protobuf::uint32 size_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<Range> Range_default_instance_;
+
+// -------------------------------------------------------------------
+
+class AllocSvrEntry : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.AllocSvrEntry) */ {
+ public:
+  AllocSvrEntry();
+  virtual ~AllocSvrEntry();
+
+  AllocSvrEntry(const AllocSvrEntry& from);
+
+  inline AllocSvrEntry& operator=(const AllocSvrEntry& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AllocSvrEntry& default_instance();
+
+  static const AllocSvrEntry* internal_default_instance();
+
+  void Swap(AllocSvrEntry* other);
+
+  // implements Message ----------------------------------------------
+
+  inline AllocSvrEntry* New() const { return New(NULL); }
+
+  AllocSvrEntry* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(AllocSvrEntry* other);
+  void UnsafeMergeFrom(const AllocSvrEntry& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional .zproto.IpPort addr = 1;
+  bool has_addr() const;
+  void clear_addr();
+  static const int kAddrFieldNumber = 1;
+  const ::zproto::IpPort& addr() const;
+  ::zproto::IpPort* mutable_addr();
+  ::zproto::IpPort* release_addr();
+  void set_allocated_addr(::zproto::IpPort* addr);
+
+  // repeated .zproto.Range ranges = 2;
+  int ranges_size() const;
+  void clear_ranges();
+  static const int kRangesFieldNumber = 2;
+  const ::zproto::Range& ranges(int index) const;
+  ::zproto::Range* mutable_ranges(int index);
+  ::zproto::Range* add_ranges();
+  ::google::protobuf::RepeatedPtrField< ::zproto::Range >*
+      mutable_ranges();
+  const ::google::protobuf::RepeatedPtrField< ::zproto::Range >&
+      ranges() const;
+
+  // @@protoc_insertion_point(class_scope:zproto.AllocSvrEntry)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::zproto::Range > ranges_;
+  ::zproto::IpPort* addr_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<AllocSvrEntry> AllocSvrEntry_default_instance_;
+
+// -------------------------------------------------------------------
+
+class SetEntry : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.SetEntry) */ {
+ public:
+  SetEntry();
+  virtual ~SetEntry();
+
+  SetEntry(const SetEntry& from);
+
+  inline SetEntry& operator=(const SetEntry& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SetEntry& default_instance();
+
+  static const SetEntry* internal_default_instance();
+
+  void Swap(SetEntry* other);
+
+  // implements Message ----------------------------------------------
+
+  inline SetEntry* New() const { return New(NULL); }
+
+  SetEntry* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(SetEntry* other);
+  void UnsafeMergeFrom(const SetEntry& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .zproto.AllocSvrEntry allocs = 1;
+  int allocs_size() const;
+  void clear_allocs();
+  static const int kAllocsFieldNumber = 1;
+  const ::zproto::AllocSvrEntry& allocs(int index) const;
+  ::zproto::AllocSvrEntry* mutable_allocs(int index);
+  ::zproto::AllocSvrEntry* add_allocs();
+  ::google::protobuf::RepeatedPtrField< ::zproto::AllocSvrEntry >*
+      mutable_allocs();
+  const ::google::protobuf::RepeatedPtrField< ::zproto::AllocSvrEntry >&
+      allocs() const;
+
+  // optional .zproto.Range range = 2;
+  bool has_range() const;
+  void clear_range();
+  static const int kRangeFieldNumber = 2;
+  const ::zproto::Range& range() const;
+  ::zproto::Range* mutable_range();
+  ::zproto::Range* release_range();
+  void set_allocated_range(::zproto::Range* range);
+
+  // @@protoc_insertion_point(class_scope:zproto.SetEntry)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::zproto::AllocSvrEntry > allocs_;
+  ::zproto::Range* range_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<SetEntry> SetEntry_default_instance_;
+
+// -------------------------------------------------------------------
+
+class Router : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.Router) */ {
+ public:
+  Router();
+  virtual ~Router();
+
+  Router(const Router& from);
+
+  inline Router& operator=(const Router& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Router& default_instance();
+
+  static const Router* internal_default_instance();
+
+  void Swap(Router* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Router* New() const { return New(NULL); }
+
+  Router* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Router* other);
+  void UnsafeMergeFrom(const Router& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 version = 1;
+  void clear_version();
+  static const int kVersionFieldNumber = 1;
+  ::google::protobuf::uint32 version() const;
+  void set_version(::google::protobuf::uint32 value);
+
+  // optional string name = 2;
+  void clear_name();
+  static const int kNameFieldNumber = 2;
+  const ::std::string& name() const;
+  void set_name(const ::std::string& value);
+  void set_name(const char* value);
+  void set_name(const char* value, size_t size);
+  ::std::string* mutable_name();
+  ::std::string* release_name();
+  void set_allocated_name(::std::string* name);
+
+  // repeated .zproto.SetEntry sets = 3;
+  int sets_size() const;
+  void clear_sets();
+  static const int kSetsFieldNumber = 3;
+  const ::zproto::SetEntry& sets(int index) const;
+  ::zproto::SetEntry* mutable_sets(int index);
+  ::zproto::SetEntry* add_sets();
+  ::google::protobuf::RepeatedPtrField< ::zproto::SetEntry >*
+      mutable_sets();
+  const ::google::protobuf::RepeatedPtrField< ::zproto::SetEntry >&
+      sets() const;
+
+  // @@protoc_insertion_point(class_scope:zproto.Router)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::zproto::SetEntry > sets_;
+  ::google::protobuf::internal::ArenaStringPtr name_;
+  ::google::protobuf::uint32 version_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<Router> Router_default_instance_;
+
+// -------------------------------------------------------------------
+
+class UpdateRouteTableReq : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.UpdateRouteTableReq) */ {
+ public:
+  UpdateRouteTableReq();
+  virtual ~UpdateRouteTableReq();
+
+  UpdateRouteTableReq(const UpdateRouteTableReq& from);
+
+  inline UpdateRouteTableReq& operator=(const UpdateRouteTableReq& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UpdateRouteTableReq& default_instance();
+
+  static const UpdateRouteTableReq* internal_default_instance();
+
+  void Swap(UpdateRouteTableReq* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UpdateRouteTableReq* New() const { return New(NULL); }
+
+  UpdateRouteTableReq* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(UpdateRouteTableReq* other);
+  void UnsafeMergeFrom(const UpdateRouteTableReq& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional .zproto.Router router = 1;
+  bool has_router() const;
+  void clear_router();
+  static const int kRouterFieldNumber = 1;
+  const ::zproto::Router& router() const;
+  ::zproto::Router* mutable_router();
+  ::zproto::Router* release_router();
+  void set_allocated_router(::zproto::Router* router);
+
+  // @@protoc_insertion_point(class_scope:zproto.UpdateRouteTableReq)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::zproto::Router* router_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<UpdateRouteTableReq> UpdateRouteTableReq_default_instance_;
+
+// -------------------------------------------------------------------
+
+class UpdateRouteTableRsp : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.UpdateRouteTableRsp) */ {
+ public:
+  UpdateRouteTableRsp();
+  virtual ~UpdateRouteTableRsp();
+
+  UpdateRouteTableRsp(const UpdateRouteTableRsp& from);
+
+  inline UpdateRouteTableRsp& operator=(const UpdateRouteTableRsp& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UpdateRouteTableRsp& default_instance();
+
+  static const UpdateRouteTableRsp* internal_default_instance();
+
+  void Swap(UpdateRouteTableRsp* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UpdateRouteTableRsp* New() const { return New(NULL); }
+
+  UpdateRouteTableRsp* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(UpdateRouteTableRsp* other);
+  void UnsafeMergeFrom(const UpdateRouteTableRsp& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:zproto.UpdateRouteTableRsp)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<UpdateRouteTableRsp> UpdateRouteTableRsp_default_instance_;
+
+// -------------------------------------------------------------------
+
+class GetRouteTableReq : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.GetRouteTableReq) */ {
+ public:
+  GetRouteTableReq();
+  virtual ~GetRouteTableReq();
+
+  GetRouteTableReq(const GetRouteTableReq& from);
+
+  inline GetRouteTableReq& operator=(const GetRouteTableReq& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const GetRouteTableReq& default_instance();
+
+  static const GetRouteTableReq* internal_default_instance();
+
+  void Swap(GetRouteTableReq* other);
+
+  // implements Message ----------------------------------------------
+
+  inline GetRouteTableReq* New() const { return New(NULL); }
+
+  GetRouteTableReq* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(GetRouteTableReq* other);
+  void UnsafeMergeFrom(const GetRouteTableReq& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:zproto.GetRouteTableReq)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<GetRouteTableReq> GetRouteTableReq_default_instance_;
+
+// -------------------------------------------------------------------
+
+class GetRouteTableRsp : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.GetRouteTableRsp) */ {
+ public:
+  GetRouteTableRsp();
+  virtual ~GetRouteTableRsp();
+
+  GetRouteTableRsp(const GetRouteTableRsp& from);
+
+  inline GetRouteTableRsp& operator=(const GetRouteTableRsp& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const GetRouteTableRsp& default_instance();
+
+  static const GetRouteTableRsp* internal_default_instance();
+
+  void Swap(GetRouteTableRsp* other);
+
+  // implements Message ----------------------------------------------
+
+  inline GetRouteTableRsp* New() const { return New(NULL); }
+
+  GetRouteTableRsp* New(::google::protobuf::Arena* arena) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(GetRouteTableRsp* other);
+  void UnsafeMergeFrom(const GetRouteTableRsp& from);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional .zproto.Router router = 1;
+  bool has_router() const;
+  void clear_router();
+  static const int kRouterFieldNumber = 1;
+  const ::zproto::Router& router() const;
+  ::zproto::Router* mutable_router();
+  ::zproto::Router* release_router();
+  void set_allocated_router(::zproto::Router* router);
+
+  // @@protoc_insertion_point(class_scope:zproto.GetRouteTableRsp)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::zproto::Router* router_;
+  mutable int _cached_size_;
+  friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
+  friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
+  friend void protobuf_AssignDesc_seqsvr_2eproto();
+  friend void protobuf_ShutdownFile_seqsvr_2eproto();
+
+  void InitAsDefaultInstance();
+};
+extern ::google::protobuf::internal::ExplicitlyConstructed<GetRouteTableRsp> GetRouteTableRsp_default_instance_;
+
+// -------------------------------------------------------------------
 
 class FetchNextSequenceReq : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:zproto.FetchNextSequenceReq) */ {
  public:
@@ -872,6 +1570,459 @@ extern ::google::protobuf::internal::ExplicitlyConstructed<SaveMaxSeqRsp> SaveMa
 // ===================================================================
 
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
+// IpPort
+
+// optional string host = 1;
+inline void IpPort::clear_host() {
+  host_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& IpPort::host() const {
+  // @@protoc_insertion_point(field_get:zproto.IpPort.host)
+  return host_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void IpPort::set_host(const ::std::string& value) {
+  
+  host_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:zproto.IpPort.host)
+}
+inline void IpPort::set_host(const char* value) {
+  
+  host_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:zproto.IpPort.host)
+}
+inline void IpPort::set_host(const char* value, size_t size) {
+  
+  host_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:zproto.IpPort.host)
+}
+inline ::std::string* IpPort::mutable_host() {
+  
+  // @@protoc_insertion_point(field_mutable:zproto.IpPort.host)
+  return host_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* IpPort::release_host() {
+  // @@protoc_insertion_point(field_release:zproto.IpPort.host)
+  
+  return host_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void IpPort::set_allocated_host(::std::string* host) {
+  if (host != NULL) {
+    
+  } else {
+    
+  }
+  host_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), host);
+  // @@protoc_insertion_point(field_set_allocated:zproto.IpPort.host)
+}
+
+// optional uint32 port = 2;
+inline void IpPort::clear_port() {
+  port_ = 0u;
+}
+inline ::google::protobuf::uint32 IpPort::port() const {
+  // @@protoc_insertion_point(field_get:zproto.IpPort.port)
+  return port_;
+}
+inline void IpPort::set_port(::google::protobuf::uint32 value) {
+  
+  port_ = value;
+  // @@protoc_insertion_point(field_set:zproto.IpPort.port)
+}
+
+inline const IpPort* IpPort::internal_default_instance() {
+  return &IpPort_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// Range
+
+// optional uint32 id = 1;
+inline void Range::clear_id() {
+  id_ = 0u;
+}
+inline ::google::protobuf::uint32 Range::id() const {
+  // @@protoc_insertion_point(field_get:zproto.Range.id)
+  return id_;
+}
+inline void Range::set_id(::google::protobuf::uint32 value) {
+  
+  id_ = value;
+  // @@protoc_insertion_point(field_set:zproto.Range.id)
+}
+
+// optional uint32 size = 2;
+inline void Range::clear_size() {
+  size_ = 0u;
+}
+inline ::google::protobuf::uint32 Range::size() const {
+  // @@protoc_insertion_point(field_get:zproto.Range.size)
+  return size_;
+}
+inline void Range::set_size(::google::protobuf::uint32 value) {
+  
+  size_ = value;
+  // @@protoc_insertion_point(field_set:zproto.Range.size)
+}
+
+inline const Range* Range::internal_default_instance() {
+  return &Range_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// AllocSvrEntry
+
+// optional .zproto.IpPort addr = 1;
+inline bool AllocSvrEntry::has_addr() const {
+  return this != internal_default_instance() && addr_ != NULL;
+}
+inline void AllocSvrEntry::clear_addr() {
+  if (GetArenaNoVirtual() == NULL && addr_ != NULL) delete addr_;
+  addr_ = NULL;
+}
+inline const ::zproto::IpPort& AllocSvrEntry::addr() const {
+  // @@protoc_insertion_point(field_get:zproto.AllocSvrEntry.addr)
+  return addr_ != NULL ? *addr_
+                         : *::zproto::IpPort::internal_default_instance();
+}
+inline ::zproto::IpPort* AllocSvrEntry::mutable_addr() {
+  
+  if (addr_ == NULL) {
+    addr_ = new ::zproto::IpPort;
+  }
+  // @@protoc_insertion_point(field_mutable:zproto.AllocSvrEntry.addr)
+  return addr_;
+}
+inline ::zproto::IpPort* AllocSvrEntry::release_addr() {
+  // @@protoc_insertion_point(field_release:zproto.AllocSvrEntry.addr)
+  
+  ::zproto::IpPort* temp = addr_;
+  addr_ = NULL;
+  return temp;
+}
+inline void AllocSvrEntry::set_allocated_addr(::zproto::IpPort* addr) {
+  delete addr_;
+  addr_ = addr;
+  if (addr) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:zproto.AllocSvrEntry.addr)
+}
+
+// repeated .zproto.Range ranges = 2;
+inline int AllocSvrEntry::ranges_size() const {
+  return ranges_.size();
+}
+inline void AllocSvrEntry::clear_ranges() {
+  ranges_.Clear();
+}
+inline const ::zproto::Range& AllocSvrEntry::ranges(int index) const {
+  // @@protoc_insertion_point(field_get:zproto.AllocSvrEntry.ranges)
+  return ranges_.Get(index);
+}
+inline ::zproto::Range* AllocSvrEntry::mutable_ranges(int index) {
+  // @@protoc_insertion_point(field_mutable:zproto.AllocSvrEntry.ranges)
+  return ranges_.Mutable(index);
+}
+inline ::zproto::Range* AllocSvrEntry::add_ranges() {
+  // @@protoc_insertion_point(field_add:zproto.AllocSvrEntry.ranges)
+  return ranges_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::zproto::Range >*
+AllocSvrEntry::mutable_ranges() {
+  // @@protoc_insertion_point(field_mutable_list:zproto.AllocSvrEntry.ranges)
+  return &ranges_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::zproto::Range >&
+AllocSvrEntry::ranges() const {
+  // @@protoc_insertion_point(field_list:zproto.AllocSvrEntry.ranges)
+  return ranges_;
+}
+
+inline const AllocSvrEntry* AllocSvrEntry::internal_default_instance() {
+  return &AllocSvrEntry_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// SetEntry
+
+// repeated .zproto.AllocSvrEntry allocs = 1;
+inline int SetEntry::allocs_size() const {
+  return allocs_.size();
+}
+inline void SetEntry::clear_allocs() {
+  allocs_.Clear();
+}
+inline const ::zproto::AllocSvrEntry& SetEntry::allocs(int index) const {
+  // @@protoc_insertion_point(field_get:zproto.SetEntry.allocs)
+  return allocs_.Get(index);
+}
+inline ::zproto::AllocSvrEntry* SetEntry::mutable_allocs(int index) {
+  // @@protoc_insertion_point(field_mutable:zproto.SetEntry.allocs)
+  return allocs_.Mutable(index);
+}
+inline ::zproto::AllocSvrEntry* SetEntry::add_allocs() {
+  // @@protoc_insertion_point(field_add:zproto.SetEntry.allocs)
+  return allocs_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::zproto::AllocSvrEntry >*
+SetEntry::mutable_allocs() {
+  // @@protoc_insertion_point(field_mutable_list:zproto.SetEntry.allocs)
+  return &allocs_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::zproto::AllocSvrEntry >&
+SetEntry::allocs() const {
+  // @@protoc_insertion_point(field_list:zproto.SetEntry.allocs)
+  return allocs_;
+}
+
+// optional .zproto.Range range = 2;
+inline bool SetEntry::has_range() const {
+  return this != internal_default_instance() && range_ != NULL;
+}
+inline void SetEntry::clear_range() {
+  if (GetArenaNoVirtual() == NULL && range_ != NULL) delete range_;
+  range_ = NULL;
+}
+inline const ::zproto::Range& SetEntry::range() const {
+  // @@protoc_insertion_point(field_get:zproto.SetEntry.range)
+  return range_ != NULL ? *range_
+                         : *::zproto::Range::internal_default_instance();
+}
+inline ::zproto::Range* SetEntry::mutable_range() {
+  
+  if (range_ == NULL) {
+    range_ = new ::zproto::Range;
+  }
+  // @@protoc_insertion_point(field_mutable:zproto.SetEntry.range)
+  return range_;
+}
+inline ::zproto::Range* SetEntry::release_range() {
+  // @@protoc_insertion_point(field_release:zproto.SetEntry.range)
+  
+  ::zproto::Range* temp = range_;
+  range_ = NULL;
+  return temp;
+}
+inline void SetEntry::set_allocated_range(::zproto::Range* range) {
+  delete range_;
+  range_ = range;
+  if (range) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:zproto.SetEntry.range)
+}
+
+inline const SetEntry* SetEntry::internal_default_instance() {
+  return &SetEntry_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// Router
+
+// optional uint32 version = 1;
+inline void Router::clear_version() {
+  version_ = 0u;
+}
+inline ::google::protobuf::uint32 Router::version() const {
+  // @@protoc_insertion_point(field_get:zproto.Router.version)
+  return version_;
+}
+inline void Router::set_version(::google::protobuf::uint32 value) {
+  
+  version_ = value;
+  // @@protoc_insertion_point(field_set:zproto.Router.version)
+}
+
+// optional string name = 2;
+inline void Router::clear_name() {
+  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& Router::name() const {
+  // @@protoc_insertion_point(field_get:zproto.Router.name)
+  return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Router::set_name(const ::std::string& value) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:zproto.Router.name)
+}
+inline void Router::set_name(const char* value) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:zproto.Router.name)
+}
+inline void Router::set_name(const char* value, size_t size) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:zproto.Router.name)
+}
+inline ::std::string* Router::mutable_name() {
+  
+  // @@protoc_insertion_point(field_mutable:zproto.Router.name)
+  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Router::release_name() {
+  // @@protoc_insertion_point(field_release:zproto.Router.name)
+  
+  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Router::set_allocated_name(::std::string* name) {
+  if (name != NULL) {
+    
+  } else {
+    
+  }
+  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
+  // @@protoc_insertion_point(field_set_allocated:zproto.Router.name)
+}
+
+// repeated .zproto.SetEntry sets = 3;
+inline int Router::sets_size() const {
+  return sets_.size();
+}
+inline void Router::clear_sets() {
+  sets_.Clear();
+}
+inline const ::zproto::SetEntry& Router::sets(int index) const {
+  // @@protoc_insertion_point(field_get:zproto.Router.sets)
+  return sets_.Get(index);
+}
+inline ::zproto::SetEntry* Router::mutable_sets(int index) {
+  // @@protoc_insertion_point(field_mutable:zproto.Router.sets)
+  return sets_.Mutable(index);
+}
+inline ::zproto::SetEntry* Router::add_sets() {
+  // @@protoc_insertion_point(field_add:zproto.Router.sets)
+  return sets_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::zproto::SetEntry >*
+Router::mutable_sets() {
+  // @@protoc_insertion_point(field_mutable_list:zproto.Router.sets)
+  return &sets_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::zproto::SetEntry >&
+Router::sets() const {
+  // @@protoc_insertion_point(field_list:zproto.Router.sets)
+  return sets_;
+}
+
+inline const Router* Router::internal_default_instance() {
+  return &Router_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// UpdateRouteTableReq
+
+// optional .zproto.Router router = 1;
+inline bool UpdateRouteTableReq::has_router() const {
+  return this != internal_default_instance() && router_ != NULL;
+}
+inline void UpdateRouteTableReq::clear_router() {
+  if (GetArenaNoVirtual() == NULL && router_ != NULL) delete router_;
+  router_ = NULL;
+}
+inline const ::zproto::Router& UpdateRouteTableReq::router() const {
+  // @@protoc_insertion_point(field_get:zproto.UpdateRouteTableReq.router)
+  return router_ != NULL ? *router_
+                         : *::zproto::Router::internal_default_instance();
+}
+inline ::zproto::Router* UpdateRouteTableReq::mutable_router() {
+  
+  if (router_ == NULL) {
+    router_ = new ::zproto::Router;
+  }
+  // @@protoc_insertion_point(field_mutable:zproto.UpdateRouteTableReq.router)
+  return router_;
+}
+inline ::zproto::Router* UpdateRouteTableReq::release_router() {
+  // @@protoc_insertion_point(field_release:zproto.UpdateRouteTableReq.router)
+  
+  ::zproto::Router* temp = router_;
+  router_ = NULL;
+  return temp;
+}
+inline void UpdateRouteTableReq::set_allocated_router(::zproto::Router* router) {
+  delete router_;
+  router_ = router;
+  if (router) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:zproto.UpdateRouteTableReq.router)
+}
+
+inline const UpdateRouteTableReq* UpdateRouteTableReq::internal_default_instance() {
+  return &UpdateRouteTableReq_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// UpdateRouteTableRsp
+
+inline const UpdateRouteTableRsp* UpdateRouteTableRsp::internal_default_instance() {
+  return &UpdateRouteTableRsp_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// GetRouteTableReq
+
+inline const GetRouteTableReq* GetRouteTableReq::internal_default_instance() {
+  return &GetRouteTableReq_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
+// GetRouteTableRsp
+
+// optional .zproto.Router router = 1;
+inline bool GetRouteTableRsp::has_router() const {
+  return this != internal_default_instance() && router_ != NULL;
+}
+inline void GetRouteTableRsp::clear_router() {
+  if (GetArenaNoVirtual() == NULL && router_ != NULL) delete router_;
+  router_ = NULL;
+}
+inline const ::zproto::Router& GetRouteTableRsp::router() const {
+  // @@protoc_insertion_point(field_get:zproto.GetRouteTableRsp.router)
+  return router_ != NULL ? *router_
+                         : *::zproto::Router::internal_default_instance();
+}
+inline ::zproto::Router* GetRouteTableRsp::mutable_router() {
+  
+  if (router_ == NULL) {
+    router_ = new ::zproto::Router;
+  }
+  // @@protoc_insertion_point(field_mutable:zproto.GetRouteTableRsp.router)
+  return router_;
+}
+inline ::zproto::Router* GetRouteTableRsp::release_router() {
+  // @@protoc_insertion_point(field_release:zproto.GetRouteTableRsp.router)
+  
+  ::zproto::Router* temp = router_;
+  router_ = NULL;
+  return temp;
+}
+inline void GetRouteTableRsp::set_allocated_router(::zproto::Router* router) {
+  delete router_;
+  router_ = router;
+  if (router) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:zproto.GetRouteTableRsp.router)
+}
+
+inline const GetRouteTableRsp* GetRouteTableRsp::internal_default_instance() {
+  return &GetRouteTableRsp_default_instance_.get();
+}
+// -------------------------------------------------------------------
+
 // FetchNextSequenceReq
 
 // optional uint32 id = 1;
@@ -1250,6 +2401,24 @@ inline const SaveMaxSeqRsp* SaveMaxSeqRsp::internal_default_instance() {
   return &SaveMaxSeqRsp_default_instance_.get();
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

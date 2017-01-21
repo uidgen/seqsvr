@@ -19,11 +19,21 @@
 
 #include "storesvr/store_server.h"
 
+#include "nebula/base/config_manager.h"
+
 #include "storesvr/storesvr_manager.h"
+
+
+StoreServer::StoreServer() {
+  auto config_manager = nebula::ConfigManager::GetInstance();
+  
+  config_manager->Register("store", &store_config_);
+}
+
 
 bool StoreServer::Initialize() {
   auto store_instance = StoreSvrManager::GetInstance();
-  store_instance->Initialize(1, "/tmp/seq.dat");
+  store_instance->Initialize(store_config_.set_id, store_config_.store_path);
   
   RegisterService("store_server", "rpc_server", "zrpc");
   BaseServer::Initialize();

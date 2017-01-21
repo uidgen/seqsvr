@@ -22,6 +22,9 @@
 
 #include "nebula/net/base_server.h"
 
+// 仲裁服务的一个主要功能探测AllocSvr
+// 一般会引入第三方服务，比如etcd或zookeeper
+// 当前暂不实现AllocSvr探测，提供一个api接口更新StoreSvr里的路由表
 class MediateServer : public nebula::BaseServer {
 public:
   MediateServer() = default;

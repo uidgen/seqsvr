@@ -29,6 +29,9 @@ public:
   
   static ProtoRpcResponsePtr LoadMaxSeqsData(RpcRequestPtr request);
   static ProtoRpcResponsePtr SaveMaxSeq(RpcRequestPtr request);
+  
+  static ProtoRpcResponsePtr UpdateRouteTable(RpcRequestPtr request);
+  static ProtoRpcResponsePtr GetRouteTable(RpcRequestPtr request);
 };
 
 #endif // STORESVR_ZRPC_STORE_DISPATCHER_H_

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016, https://github.com/nebula-im
+ *  Copyright (c) 2016, https://github.com/zhatalk
  *  All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +15,13 @@
  * limitations under the License.
  */
 
-#ifndef	MEDIATESVR_MEDIATE_HANDLER_H_
-#define	MEDIATESVR_MEDIATE_HANDLER_H_
+#ifndef	MEDIATESVR_MEDIATE_HTTP_HANDLER_H_
+#define	MEDIATESVR_MEDIATE_HTTP_HANDLER_H_
 
-#include <folly/io/async/EventBase.h>
-#include "nebula/net/handler/nebula_base_handler.h"
-#include "nebula/net/handler/zproto/zproto_handler.h"
+#include "nebula/net/handler/http/http_request_handler.h"
 
-struct mediatesvr {
-  
-  ///////////////////////////////////////////////////////////////////////////////////////
-  static int OnNewConnection(nebula::TcpServiceBase* service, nebula::ZProtoPipeline* pipeline);
-  static int OnDataReceived(nebula::ZProtoPipeline* pipeline, std::shared_ptr<PackageMessage> message_data);
-  static int OnConnectionClosed(nebula::TcpServiceBase* service, nebula::ZProtoPipeline* pipeline);
+// 初始化路由表
+void UpdateRouteTable(const proxygen::HTTPMessage& headers, folly::IOBufQueue* body, proxygen::ResponseBuilder* r);
 
-};
-
-#endif // MEDIATESVR_MEDIATE_HANDLER_H_
+#endif // MEDIATESVR_MEDIATE_HTTP_HANDLER_H_
 

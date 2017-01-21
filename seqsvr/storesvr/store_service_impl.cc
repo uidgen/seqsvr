@@ -38,3 +38,14 @@ int StoreServiceImpl::SaveMaxSeq(const zproto::SaveMaxSeqReq& request, zproto::S
   response->set_last_max_seq(last_max_seq);
   return 0;
 }
+
+int StoreServiceImpl::UpdateRouteTable(const zproto::UpdateRouteTableReq& request, zproto::UpdateRouteTableRsp* response) {
+  StoreSvrManager::GetInstance()->SaveCacheRouter(request.router());
+  return 0;
+}
+
+int StoreServiceImpl::GetRouteTable(const zproto::GetRouteTableReq& request, zproto::GetRouteTableRsp* response) {
+  response->mutable_router()->CopyFrom(StoreSvrManager::GetInstance()->GetCacheRouter());
+  return 0;
+}
+

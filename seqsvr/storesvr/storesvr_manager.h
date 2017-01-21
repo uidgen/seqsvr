@@ -21,6 +21,7 @@
 #include <folly/MemoryMapping.h>
 #include <folly/Singleton.h>
 
+#include "proto/cc/seqsvr.pb.h"
 #include "base/set.h"
 
 // TODO(@benqi): 单机模拟set的allocsvr和storesvr
@@ -37,6 +38,12 @@ public:
   
   uint64_t SetSectionsData(uint32_t set_id, uint32_t alloc_id, uint32_t section_id, uint64_t max_seq);
   
+  zproto::Router& GetCacheRouter() {
+    return cache_router_;
+  }
+  
+  bool SaveCacheRouter(const zproto::Router& router);
+  
 private:
   StoreSvrManager() = default;
   friend class folly::Singleton<StoreSvrManager>;
@@ -48,6 +55,10 @@ private:
   uint32_t set_id_{1};
   
   bool inited_ = false;
+  std::string seq_file_path_;
+  std::string route_table_file_path_;
+  
+  zproto::Router cache_router_;
 };
 
 #endif

@@ -71,9 +71,7 @@ uint64_t AllocSvrManager::FetchNextSequence(uint32_t id) {
 // bytes
 void AllocSvrManager::Load(uint32_t set_id, uint32_t alloc_id) {
   // 2. 去storesvr加载max_seqs
-  // 先使用StoreSvrManager加载，跑通流程
   state_ = kAllocWaitLoad;
-  
   
   zproto::LoadMaxSeqsDataReq load_max_seqs_data_req;
   load_max_seqs_data_req.set_set_id(set_id);
@@ -93,10 +91,11 @@ void AllocSvrManager::Load(uint32_t set_id, uint32_t alloc_id) {
                                         return 0;
                                       });
 
-//  auto store = StoreSvrManager::GetInstance();
-//  store->Initialize(set_id, "/tmp/seq.dat");
-//  std::string max_seqs_data = store->GetSectionsData(set_id, alloc_id);
-//  OnLoad(max_seqs_data);
+  // 先使用StoreSvrManager加载，跑通流程
+  // auto store = StoreSvrManager::GetInstance();
+  // store->Initialize(set_id, "/tmp/seq.dat");
+  // std::string max_seqs_data = store->GetSectionsData(set_id, alloc_id);
+  // OnLoad(max_seqs_data);
 }
 
 void AllocSvrManager::Save(uint32_t set_id, uint32_t alloc_id, uint32_t section_id, uint64_t section_max_seq) {

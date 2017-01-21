@@ -17,23 +17,45 @@
 
 #include "mediatesvr/mediate_handler.h"
 
-int mediatesvr::OnNewConnection(nebula::TcpServiceBase* service, nebula::ZProtoPipeline* pipeline) {
-  auto h = pipeline->getHandler<ZProtoHandler>();
-  DCHECK(h);
+#include "proto/cc/seqsvr.pb.h"
+#include "nebula/net/zproto/api_message_box.h"
+#include "base/message_handler_util.h"
+#include "base/router_table.h"
+
+REGISTER_HTTP_HANDLER(UpdateRouteTable, "/media/router/update", UpdateRouteTable);
+
+// 初始化路由表
+void UpdateRouteTable(const proxygen::HTTPMessage& headers, folly::IOBufQueue* body, proxygen::ResponseBuilder* r) {
+  zproto::UpdateRouteTableReq update_route_table_req;
   
-  return 0;
+  RouteTable table;
+  RouteTable::MakeTestRouteTable(table);
+  table.SerializeToRouter(update_route_table_req.mutable_router());
+  
+  ZRpcClientCall<zproto::UpdateRouteTableRsp>("store_client",
+                                             MakeRpcRequest(update_route_table_req),
+                                             [&] (std::shared_ptr<ApiRpcOk<zproto::UpdateRouteTableRsp>> rpc_ok,
+                                                  ProtoRpcResponsePtr rpc_error) -> int {
+                                               if (rpc_error) {
+                                                 LOG(ERROR) << "LoadMaxSeqsDataReq - rpc_error: " << rpc_error->ToString();
+                                                 // OnLoad("");
+                                               } else {
+                                                 LOG(INFO) << "LoadMaxSeqsDataReq - load_max_seqs_data_rsp: " << rpc_ok->ToString();
+                                                 // OnLoad((*load_max_seqs_data_rsp)->max_seqs());
+                                               }
+                                               return 0;
+                                             });
+
+  std::string json("{\"status\": \"OK\"}\n");
+  std::unique_ptr<folly::IOBuf> json_string = folly::IOBuf::copyBuffer(json.c_str(), json.length());
+  r->header("Content-Type", "application/json;charset=utf-8").body(std::move(json_string));
 }
 
-int mediatesvr::OnDataReceived(nebula::ZProtoPipeline* pipeline, std::shared_ptr<PackageMessage> message_data) {
-  auto h = pipeline->getHandler<ZProtoHandler>();
-  DCHECK(h);
-
-  return 0;
+// AllocSvr加入和移除集群
+void AddAllocSvr(const proxygen::HTTPMessage& headers, folly::IOBufQueue*, proxygen::ResponseBuilder* r) {
+  
 }
 
-int mediatesvr::OnConnectionClosed(nebula::TcpServiceBase* service, nebula::ZProtoPipeline* pipeline) {
-  auto h = pipeline->getHandler<ZProtoHandler>();
-  DCHECK(h);
+void RemoveAllocSvr(const proxygen::HTTPMessage& headers, folly::IOBufQueue*, proxygen::ResponseBuilder* r) {
   
-  return 0;
 }

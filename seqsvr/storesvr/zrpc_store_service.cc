@@ -30,3 +30,13 @@ int ZRpcStoreService::SaveMaxSeq(const zproto::SaveMaxSeqReq& request, zproto::S
   LOG(ERROR) << "SaveMaxSeq - SaveMaxSeq unimplemented";
   return -1;
 }
+
+int ZRpcStoreService::UpdateRouteTable(const zproto::UpdateRouteTableReq& request, zproto::UpdateRouteTableRsp* response) {
+  LOG(ERROR) << "UpdateRouteTable - SaveMaxSeq unimplemented";
+  return -1;
+}
+
+int ZRpcStoreService::GetRouteTable(const zproto::GetRouteTableReq& request, zproto::GetRouteTableRsp* response) {
+  LOG(ERROR) << "GetRouteTable - SaveMaxSeq unimplemented";
+  return -1;
+}

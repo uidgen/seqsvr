@@ -40,10 +40,22 @@ const uint32_t kSectionSlotSize = (kMaxIDSize/kSectionSize)+1;          // 一�
 const uint32_t kSectionSlotMemSize = kSectionSlotSize<<3;               // 一个Section包含10万个uid，一个uint32_t空间共有42950个Section
 const uint64_t kMaxSeqStep = 10000;               // 步长为1万
 
-// 号段
-struct IDRange {
-  uint64_t id;
-  size_t   size;
+//// 号段
+//struct IDRange {
+//  uint32_t id;
+//  size_t   size;
+//};
+//
+//struct IDRangeList {
+//  
+//};
+
+struct Section {
+  uint32_t id_bgein;  // 当前section首id
+};
+
+struct SectionSet {
+  
 };
 
 #if 0

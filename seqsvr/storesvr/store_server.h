@@ -22,11 +22,31 @@
 
 #include <folly/io/async/EventBase.h>
 
+#include "nebula/base/configurable.h"
 #include "nebula/net/base_server.h"
+
+struct StoreConfig : public nebula::Configurable {
+  virtual ~StoreConfig() = default;
+  
+  // Override from Configurable
+  bool SetConf(const std::string& conf_name, const folly::dynamic& conf) override {
+    folly::dynamic v = nullptr;
+    
+    v = Configurable::GetConfigValue(conf, "store_path");
+    if (v.isString()) store_path = v.asString();
+    v = Configurable::GetConfigValue(conf, "set_id");
+    if (v.isInt()) set_id = static_cast<int>(v.asInt());
+
+    return true;
+  }
+  
+  std::string store_path;
+  int set_id {0};
+};
 
 class StoreServer : public nebula::BaseServer {
 public:
-  StoreServer() = default;
+  StoreServer();
   ~StoreServer() override = default;
   
 protected:
@@ -36,6 +56,8 @@ protected:
     BaseServer::Run();
     return true;
   }
+  
+  StoreConfig store_config_;
 };
 
 #endif // STORESVR_STORE_SERVER_H_

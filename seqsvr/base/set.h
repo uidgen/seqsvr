@@ -30,6 +30,17 @@ const uint32_t kSetSize = 1;                      // 1个set
 const uint32_t kSetAllocSize = 1;                 // 1个set分配n个allocsvr
 #endif
 
+//struct SvrAddr {
+//  std::string host;   // host
+//  uint16_t port;      // port
+//};
+
+//struct Set {
+//  uint32_t set_id;        // set唯一ID，由运维配置
+//  uint32_t id_begin;      // set集中第一个id
+//  uint32_t size;          // 整个set管理的id值
+//};
+
 #if 0
 // 初始化，通过配置获取
 // void Initialize(uint32_t set_id=1, uint32_t alloc_id=1);

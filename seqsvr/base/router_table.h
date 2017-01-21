@@ -21,18 +21,119 @@
 #include <string>
 #include <vector>
 
-#include "base/set.h"
+// 分配set集合
 
-struct AllocEntry {
-  int set_id;
-  int allocsvr_id;
-  std::string host;
-  uint16_t port;
-  int section_count;  // section数
+#include "nebula/base/string_builder.h"
+#include "base/set.h"
+#include "proto/cc/seqsvr.pb.h"
+
+/*
+ set: id(1~10240)
+ set: 从0～100000
+ */
+
+//struct Section {
+//  uint32_t begin;     // 节点开始
+//};
+
+typedef uint32_t SectionID; // 以第一个id作为SectionID
+
+typedef int64_t AllocID;
+typedef int32_t SetID;
+
+struct SvrAddr {
+  std::string host;   // host
+  uint16_t port;      // port
 };
 
-struct RouterTable {
-  std::vector<AllocEntry> alloc_nodes_;
+// 号段
+struct IDRange {
+  uint32_t id;
+  size_t   size;
+};
+
+// AllocSvr配置信息
+struct AllocEntry {
+  AllocID alloc_id;
+  SvrAddr addr;
+  std::vector<IDRange> ranges;
+};
+
+// set配置信息
+struct Set {
+  SetID set_id;                         // set_id
+  std::vector<AllocEntry> allocs;    // set集合
+  IDRange range;                      // 号段范围
+};
+
+// class RouteSearchTable;
+// seq集群配置信息
+class RouteTable {
+public:
+  RouteTable() = default;
+  ~RouteTable() = default;
+  
+  static void MakeTestRouteTable(RouteTable& table);
+
+  inline void set_version(uint32_t v) {
+    version_ = v;
+  }
+  
+  void Swap(RouteTable& o) {
+    std::swap(version_, o.version_);
+    sets_.swap(o.sets_);
+  }
+  
+  // 序列化和反序列化
+  void ParseFromRouter(const zproto::Router& router);
+  void SerializeToRouter(zproto::Router* router) const;
+
+  std::string ToString() const {
+    StringBuilder sb;
+    return sb.ToString();
+  }
+  
+private:
+  void Clear() {
+    version_ = 0;
+    sets_.clear();
+  }
+  
+  friend class RouteSearchTable;
+  uint32_t version_{0};
+  // std::string name_;     // 服务名，可能会有多个seqsvr提供服务，为统一管理，提供一个唯一名字
+  std::vector<Set> sets_;   // set集合，1个集群分配的set
+};
+
+// > = <
+struct IDRangeEntry {
+  IDRange range;
+  AllocEntry* alloc{nullptr};
+};
+
+class RouteSearchTable {
+public:
+  RouteSearchTable() = default;
+  ~RouteSearchTable() = default;
+  
+  void Initialize(RouteTable& route_table);
+  
+private:
+  std::vector<IDRangeEntry> table_;
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+class RouteTableManager {
+public:
+  RouteTableManager() = default;
+  ~RouteTableManager() = default;
+  
+  // 初始化
+  void Initialize(RouteTable& table);
+  
+private:
+  RouteTable route_table_;
+  RouteSearchTable route_search_table_;
 };
 
 #endif

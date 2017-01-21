@@ -38,7 +38,7 @@ ZRpcStoreDispatcher::ZRpcStoreDispatcher() {
 ProtoRpcResponsePtr ZRpcStoreDispatcher::LoadMaxSeqsData(RpcRequestPtr request) {
   CAST_RPC_REQUEST(LoadMaxSeqsDataReq, load_max_seqs_data_req);
   LOG(INFO) << "LoadMaxSeqsData - [" << request->ToString()
-              << "], " << load_max_seqs_data_req.Utf8DebugString();
+            << "], " << load_max_seqs_data_req.Utf8DebugString();
   
   zproto::LoadMaxSeqsDataRsp load_max_seqs_data_rsp;
   
@@ -51,7 +51,7 @@ ProtoRpcResponsePtr ZRpcStoreDispatcher::LoadMaxSeqsData(RpcRequestPtr request) 
 ProtoRpcResponsePtr ZRpcStoreDispatcher::SaveMaxSeq(RpcRequestPtr request) {
   CAST_RPC_REQUEST(SaveMaxSeqReq, save_max_seq_req);
   LOG(INFO) << "LoadMaxSeqsData - [" << request->ToString()
-  << "], " << save_max_seq_req.Utf8DebugString();
+            << "], " << save_max_seq_req.Utf8DebugString();
   
   zproto::SaveMaxSeqRsp save_max_seq_rsp;
   
@@ -59,4 +59,30 @@ ProtoRpcResponsePtr ZRpcStoreDispatcher::SaveMaxSeq(RpcRequestPtr request) {
   service_impl.SaveMaxSeq(save_max_seq_req, &save_max_seq_rsp);
   
   return MakeRpcOK(save_max_seq_rsp);
+}
+
+ProtoRpcResponsePtr ZRpcStoreDispatcher::UpdateRouteTable(RpcRequestPtr request) {
+  CAST_RPC_REQUEST(UpdateRouteTableReq, update_route_table_req);
+  LOG(INFO) << "UpdateRouteTable - [" << request->ToString()
+            << "], " << update_route_table_req.Utf8DebugString();
+  
+  zproto::UpdateRouteTableRsp update_route_table_rsp;
+  
+  StoreServiceImpl service_impl;
+  service_impl.UpdateRouteTable(update_route_table_req, &update_route_table_rsp);
+  
+  return MakeRpcOK(update_route_table_rsp);
+}
+
+ProtoRpcResponsePtr ZRpcStoreDispatcher::GetRouteTable(RpcRequestPtr request) {
+  CAST_RPC_REQUEST(GetRouteTableReq, get_route_table_req);
+  LOG(INFO) << "GetRouteTable - [" << request->ToString()
+            << "], " << get_route_table_req.Utf8DebugString();
+  
+  zproto::GetRouteTableRsp get_route_table_rsp;
+  
+  StoreServiceImpl service_impl;
+  service_impl.GetRouteTable(get_route_table_req, &get_route_table_rsp);
+  
+  return MakeRpcOK(get_route_table_rsp);
 }

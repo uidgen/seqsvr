@@ -19,14 +19,10 @@
 #include "mediatesvr/mediate_handler.h"
 
 bool MediateServer::Initialize() {
-  // 初始化处理器
-  ZProtoEventCallback::Initializer(mediatesvr::OnNewConnection,
-                                   mediatesvr::OnDataReceived,
-                                   mediatesvr::OnConnectionClosed);
-  
-  // 注册服务
+
   // 客户端连接服务
-  RegisterService("mediate_server", "tcp_server", "zproto");
+  RegisterService("mediate_server", "http_server", "http");
+  RegisterService("store_client", "rpc_client", "zrpc");
   BaseServer::Initialize();
   
 #if 0
@@ -47,7 +43,6 @@ bool MediateServer::Initialize() {
 
 bool MediateServer::Run() {
   BaseServer::Run();
-  ZProtoEventCallback::Destroy();
   return true;
 }
 

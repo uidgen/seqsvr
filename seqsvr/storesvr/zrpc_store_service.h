@@ -28,6 +28,9 @@ public:
   
   virtual int LoadMaxSeqsData(const zproto::LoadMaxSeqsDataReq& request, zproto::LoadMaxSeqsDataRsp* response);
   virtual int SaveMaxSeq(const zproto::SaveMaxSeqReq& request, zproto::SaveMaxSeqRsp* response);
+  
+  virtual int UpdateRouteTable(const zproto::UpdateRouteTableReq& request, zproto::UpdateRouteTableRsp* response);
+  virtual int GetRouteTable(const zproto::GetRouteTableReq& request, zproto::GetRouteTableRsp* response);
 };
 
 #endif
