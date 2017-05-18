@@ -34,14 +34,14 @@ struct StoreConfig : public nebula::Configurable {
     
     v = Configurable::GetConfigValue(conf, "store_path");
     if (v.isString()) store_path = v.asString();
-    v = Configurable::GetConfigValue(conf, "set_id");
-    if (v.isInt()) set_id = static_cast<int>(v.asInt());
+    v = Configurable::GetConfigValue(conf, "set_name");
+    if (v.isString()) set_name = v.asString();
 
     return true;
   }
   
   std::string store_path;
-  int set_id {0};
+  std::string set_name;
 };
 
 class StoreServer : public nebula::BaseServer {

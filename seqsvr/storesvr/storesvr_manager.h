@@ -31,12 +31,12 @@ public:
   
   static std::shared_ptr<StoreSvrManager> GetInstance();
   
-  bool Initialize(uint32_t set_id, const std::string& filepath);
+  bool Initialize(const std::string& set_name, const std::string& filepath);
   
-  std::string GetSectionsData(uint32_t set_id, uint32_t alloc_id);
-  bool GetSectionsData(uint32_t set_id, uint32_t alloc_id, std::string* data);
+  std::string GetSectionsData();
+  bool GetSectionsData(std::string* data);
   
-  uint64_t SetSectionsData(uint32_t set_id, uint32_t alloc_id, uint32_t section_id, uint64_t max_seq);
+  uint64_t SetSectionsData(uint32_t section_id, uint64_t max_seq);
   
   zproto::Router& GetCacheRouter() {
     return cache_router_;
@@ -51,9 +51,7 @@ private:
   int section_fd_ {-1};
   folly::MemoryMapping* section_max_seqs_mapping_ {nullptr};
   folly::Range<uint64_t*> mapping_mem_;
-  
-  uint32_t set_id_{1};
-  
+    
   bool inited_ = false;
   std::string seq_file_path_;
   std::string route_table_file_path_;

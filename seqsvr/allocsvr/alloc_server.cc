@@ -57,18 +57,27 @@ bool AllocServer::Run() {
     return -1;
   }
   
-  // GPerftoolsProfiler profiler;
-  // profiler.ProfilerStart();
-  AllocSvrManager::GetInstance()->Initialize(1, 1);
+  auto alloc_manager = AllocSvrManager::GetInstance();
 
-  // auto store_instance = StoreSvrManager::GetInstance();
-  // store_instance->Initialize(1, "/tmp/seq.dat");
+  main_eb_.runAfterDelay([&] {
+    auto alloc_service = net_engine_manager->Lookup("alloc_server");
+    auto alloc_name = std::string("alloc_server:10000"); // + folly::to<std::string>(alloc_service->GetServiceConfig().port);
+    
+    // GPerftoolsProfiler profiler;
+    // profiler.ProfilerStart();
+    alloc_manager->Initialize(timer_manager_.get(), "set_cluster_1", alloc_name);
+    
+    // auto store_instance = StoreSvrManager::GetInstance();
+    // store_instance->Initialize(1, "/tmp/seq.dat");
+  }, 1000);
   
   BaseDaemon::Run();
   
   // profiler.ProfilerStop();
   
   net_engine_manager->Stop();
+  alloc_manager->Destroy();
+  
   return true;
 }
 

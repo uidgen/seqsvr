@@ -22,7 +22,7 @@
 #include "base/message_handler_util.h"
 #include "base/router_table.h"
 
-REGISTER_HTTP_HANDLER(UpdateRouteTable, "/media/router/update", UpdateRouteTable);
+REGISTER_HTTP_HANDLER(UpdateRouteTable, "/mediate/router/update", UpdateRouteTable);
 
 // 初始化路由表
 void UpdateRouteTable(const proxygen::HTTPMessage& headers, folly::IOBufQueue* body, proxygen::ResponseBuilder* r) {

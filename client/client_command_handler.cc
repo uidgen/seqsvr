@@ -46,7 +46,8 @@ int DoFetchNextSeq(const std::vector<folly::StringPiece>& command_lines) {
 
   zproto::FetchNextSequenceReq fetch_next_sequence_req;
   fetch_next_sequence_req.set_id(id);
-  
+  fetch_next_sequence_req.set_version(0);
+
   ZRpcClientCall<zproto::SequenceRsp>("alloc_client",
                                  MakeRpcRequest(fetch_next_sequence_req),
                                  [] (std::shared_ptr<ApiRpcOk<zproto::SequenceRsp>> seq_rsp,
@@ -72,7 +73,8 @@ int DoGetCurrentSeq(const std::vector<folly::StringPiece>& command_lines) {
   
   zproto::GetCurrentSequenceReq get_current_sequence_req;
   get_current_sequence_req.set_id(id);
-  
+  get_current_sequence_req.set_version(0);
+
   ZRpcClientCall<zproto::SequenceRsp>("alloc_client",
                                       MakeRpcRequest(get_current_sequence_req),
                                       [] (std::shared_ptr<ApiRpcOk<zproto::SequenceRsp>> seq_rsp,

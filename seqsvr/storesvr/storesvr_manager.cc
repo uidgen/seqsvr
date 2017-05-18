@@ -34,14 +34,14 @@ std::shared_ptr<StoreSvrManager> StoreSvrManager::GetInstance() {
   return g_storesvr_manager.try_get();
 }
 
-bool StoreSvrManager::Initialize(uint32_t set_id, const std::string& filepath) {
+bool StoreSvrManager::Initialize(const std::string& set_name, const std::string& filepath) {
   boost::filesystem::path f2(filepath);
   if (!boost::filesystem::exists(f2)) {
     LOG(ERROR) << "Initialize - store db's filepath not exist!! " << filepath;
     return false;
   }
   
-  set_id_ = set_id;
+  // set_id_ = set_id;
   seq_file_path_ = filepath + "/seqdb.dat";
   route_table_file_path_ = filepath + "/router.dat";
 
@@ -110,21 +110,22 @@ StoreSvrManager::~StoreSvrManager() {
   folly::closeNoInt(section_fd_);
 }
 
-std::string StoreSvrManager::GetSectionsData(uint32_t set_id, uint32_t alloc_id) {
+std::string StoreSvrManager::GetSectionsData() {
   // TODO(@benqi): 映射到set_id/alloc_id
   std::string section_max_seqs((char*)mapping_mem_.data(), mapping_mem_.size()*sizeof(uint64_t));
   return section_max_seqs;
 }
 
-bool StoreSvrManager::GetSectionsData(uint32_t set_id, uint32_t alloc_id, std::string* data) {
+bool StoreSvrManager::GetSectionsData(std::string* data) {
   data->assign((char*)mapping_mem_.data(), mapping_mem_.size()*sizeof(uint64_t));
   return true;
 }
 
-uint64_t StoreSvrManager::SetSectionsData(uint32_t set_id, uint32_t alloc_id, uint32_t section_id, uint64_t max_seq) {
+uint64_t StoreSvrManager::SetSectionsData(uint32_t section_id, uint64_t max_seq) {
   // TODO(@benqi): 映射到set_id/alloc_id
   uint64_t rv = (max_seq/kMaxSeqStep+1)*kMaxSeqStep;
   
+  // TODO(@benqi): 1. msync, 2. 是否要锁？
   if (rv > mapping_mem_[section_id]) {
     mapping_mem_[section_id] = rv;
   } else {
@@ -136,7 +137,7 @@ uint64_t StoreSvrManager::SetSectionsData(uint32_t set_id, uint32_t alloc_id, ui
 
 bool StoreSvrManager::SaveCacheRouter(const zproto::Router& router) {
   std::string data;
-  if (!cache_router_.SerializeToString(&data)) {
+  if (!router.SerializeToString(&data)) {
     LOG(ERROR) << "SaveCacheRouter - cache_router_ serialize error!!!!";
     return false;
   }

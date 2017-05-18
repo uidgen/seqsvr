@@ -89,3 +89,16 @@ void Client::DoCommandLineLoop() {
 int main(int argc, char* argv[]) {
   return nebula::DoMain<Client>(argc, argv);
 }
+
+void DebugTest() {
+  zproto::GetRouteTableReq get_route_table_req;
+  std::string o;
+  get_route_table_req.SerializeToString(&o);
+  std::cout << o.length() << ", " << get_route_table_req.Utf8DebugString() << std::endl;
+  
+  get_route_table_req.Clear();
+  bool rv = get_route_table_req.ParseFromArray(o.c_str(), o.length());
+  if (!rv) std::cout << "error!!!" << std::endl;
+  std::cout << o.length() << ", " << get_route_table_req.Utf8DebugString() << std::endl;
+}
+

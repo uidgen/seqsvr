@@ -56,14 +56,16 @@ struct IDRange {
 struct AllocEntry {
   AllocID alloc_id;
   SvrAddr addr;
+  std::string alloc_name;
   std::vector<IDRange> ranges;
 };
 
 // set配置信息
 struct Set {
-  SetID set_id;                         // set_id
+  SetID set_id;                      // set_id
+  std::string set_name;
   std::vector<AllocEntry> allocs;    // set集合
-  IDRange range;                      // 号段范围
+  IDRange range;                     // 号段范围
 };
 
 // class RouteSearchTable;
@@ -75,6 +77,10 @@ public:
   
   static void MakeTestRouteTable(RouteTable& table);
 
+  uint32_t version() const {
+    return version_;
+  }
+  
   inline void set_version(uint32_t v) {
     version_ = v;
   }
@@ -89,9 +95,11 @@ public:
   void SerializeToRouter(zproto::Router* router) const;
 
   std::string ToString() const {
-    StringBuilder sb;
+    CStringBuilder sb;
     return sb.ToString();
   }
+  
+  AllocEntry* LookupAlloc(const std::string& set_name, const std::string& alloc_name);
   
 private:
   void Clear() {
@@ -117,6 +125,8 @@ public:
   ~RouteSearchTable() = default;
   
   void Initialize(RouteTable& route_table);
+  
+  bool CheckSectionID(AllocID alloc_id, uint32_t section_id);
   
 private:
   std::vector<IDRangeEntry> table_;

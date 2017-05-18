@@ -21,6 +21,8 @@ set (SRC_LIST
   ../base/set.h
   ../base/router_table.cc
   ../base/router_table.h
+  lease_clerk.cc
+  lease_clerk.h
   allocsvr_manager.cc
   allocsvr_manager.h
   alloc_server.cc
@@ -36,9 +38,6 @@ set (SRC_LIST
   ../proto/cc/seqsvr.pb.h
   ../proto/proto/seqsvr.proto
   ../base/message_handler_util.h
-
-  ../storesvr/storesvr_manager.cc
-  ../storesvr/storesvr_manager.h
   )
 
 add_executable (allocsvr ${SRC_LIST})

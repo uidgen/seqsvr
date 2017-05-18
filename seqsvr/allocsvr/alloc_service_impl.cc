@@ -25,35 +25,41 @@
 #include "allocsvr/allocsvr_manager.h"
 
 int AllocServiceImpl::FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) {
-  auto seq = AllocSvrManager::GetInstance()->FetchNextSequence(request.id());
-  response->set_sequence(seq);
+  SequenceWithRouterTable seq_with_router;
+  AllocSvrManager::GetInstance()->FetchNextSequence(request.id(), request.version(), seq_with_router);
+  response->set_sequence(seq_with_router.seq);
+  if (seq_with_router.router) response->set_allocated_router(seq_with_router.Release());
+  
   return 0;
 }
 
 int AllocServiceImpl::GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) {
-  auto seq = AllocSvrManager::GetInstance()->GetCurrentSequence(request.id());
-  response->set_sequence(seq);
+  SequenceWithRouterTable seq_with_router;
+  AllocSvrManager::GetInstance()->GetCurrentSequence(request.id(), request.version(), seq_with_router);
+  response->set_sequence(seq_with_router.seq);
+  if (seq_with_router.router) response->set_allocated_router(seq_with_router.Release());
+  
   return 0;
 }
 
 int AllocServiceImpl::FetchNextSequenceList(const zproto::FetchNextSequenceListReq& request, zproto::SequenceListRsp* response) {
-  auto alloc_mgr = AllocSvrManager::GetInstance();
-  for (int i=0; i<request.id_list_size(); ++i) {
-    auto seq = alloc_mgr->FetchNextSequence(request.id_list(i));
-    auto id_seq = response->add_sequence_list();
-    id_seq->set_id(request.id_list(i));
-    id_seq->set_sequence(seq);
-  }
+//  auto alloc_mgr = AllocSvrManager::GetInstance();
+//  for (int i=0; i<request.id_list_size(); ++i) {
+//    auto seq = alloc_mgr->FetchNextSequence(request.id_list(i));
+//    auto id_seq = response->add_sequence_list();
+//    id_seq->set_id(request.id_list(i));
+//    id_seq->set_sequence(seq);
+//  }
   return 0;
 }
 
 int AllocServiceImpl::GetCurrentSequenceList(const zproto::GetCurrentSequenceListReq& request, zproto::SequenceListRsp* response) {
-  auto alloc_mgr = AllocSvrManager::GetInstance();
-  for (int i=0; i<request.id_list_size(); ++i) {
-    auto seq = alloc_mgr->GetCurrentSequence(request.id_list(i));
-    auto id_seq = response->add_sequence_list();
-    id_seq->set_id(request.id_list(i));
-    id_seq->set_sequence(seq);
-  }
+//  auto alloc_mgr = AllocSvrManager::GetInstance();
+//  for (int i=0; i<request.id_list_size(); ++i) {
+//    auto seq = alloc_mgr->GetCurrentSequence(request.id_list(i));
+//    auto id_seq = response->add_sequence_list();
+//    id_seq->set_id(request.id_list(i));
+//    id_seq->set_sequence(seq);
+//  }
   return 0;
 }

@@ -33,7 +33,7 @@ StoreServer::StoreServer() {
 
 bool StoreServer::Initialize() {
   auto store_instance = StoreSvrManager::GetInstance();
-  store_instance->Initialize(store_config_.set_id, store_config_.store_path);
+  store_instance->Initialize(store_config_.set_name, store_config_.store_path);
   
   RegisterService("store_server", "rpc_server", "zrpc");
   BaseServer::Initialize();

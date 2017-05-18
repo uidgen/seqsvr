@@ -263,19 +263,30 @@ class AllocSvrEntry : public ::google::protobuf::Message /* @@protoc_insertion_p
 
   // accessors -------------------------------------------------------
 
-  // optional .zproto.IpPort addr = 1;
+  // optional string alloc_name = 1;
+  void clear_alloc_name();
+  static const int kAllocNameFieldNumber = 1;
+  const ::std::string& alloc_name() const;
+  void set_alloc_name(const ::std::string& value);
+  void set_alloc_name(const char* value);
+  void set_alloc_name(const char* value, size_t size);
+  ::std::string* mutable_alloc_name();
+  ::std::string* release_alloc_name();
+  void set_allocated_alloc_name(::std::string* alloc_name);
+
+  // optional .zproto.IpPort addr = 2;
   bool has_addr() const;
   void clear_addr();
-  static const int kAddrFieldNumber = 1;
+  static const int kAddrFieldNumber = 2;
   const ::zproto::IpPort& addr() const;
   ::zproto::IpPort* mutable_addr();
   ::zproto::IpPort* release_addr();
   void set_allocated_addr(::zproto::IpPort* addr);
 
-  // repeated .zproto.Range ranges = 2;
+  // repeated .zproto.Range ranges = 3;
   int ranges_size() const;
   void clear_ranges();
-  static const int kRangesFieldNumber = 2;
+  static const int kRangesFieldNumber = 3;
   const ::zproto::Range& ranges(int index) const;
   ::zproto::Range* mutable_ranges(int index);
   ::zproto::Range* add_ranges();
@@ -289,6 +300,7 @@ class AllocSvrEntry : public ::google::protobuf::Message /* @@protoc_insertion_p
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::zproto::Range > ranges_;
+  ::google::protobuf::internal::ArenaStringPtr alloc_name_;
   ::zproto::IpPort* addr_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
@@ -348,10 +360,21 @@ class SetEntry : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   // accessors -------------------------------------------------------
 
-  // repeated .zproto.AllocSvrEntry allocs = 1;
+  // optional string set_name = 1;
+  void clear_set_name();
+  static const int kSetNameFieldNumber = 1;
+  const ::std::string& set_name() const;
+  void set_set_name(const ::std::string& value);
+  void set_set_name(const char* value);
+  void set_set_name(const char* value, size_t size);
+  ::std::string* mutable_set_name();
+  ::std::string* release_set_name();
+  void set_allocated_set_name(::std::string* set_name);
+
+  // repeated .zproto.AllocSvrEntry allocs = 2;
   int allocs_size() const;
   void clear_allocs();
-  static const int kAllocsFieldNumber = 1;
+  static const int kAllocsFieldNumber = 2;
   const ::zproto::AllocSvrEntry& allocs(int index) const;
   ::zproto::AllocSvrEntry* mutable_allocs(int index);
   ::zproto::AllocSvrEntry* add_allocs();
@@ -360,10 +383,10 @@ class SetEntry : public ::google::protobuf::Message /* @@protoc_insertion_point(
   const ::google::protobuf::RepeatedPtrField< ::zproto::AllocSvrEntry >&
       allocs() const;
 
-  // optional .zproto.Range range = 2;
+  // optional .zproto.Range range = 3;
   bool has_range() const;
   void clear_range();
-  static const int kRangeFieldNumber = 2;
+  static const int kRangeFieldNumber = 3;
   const ::zproto::Range& range() const;
   ::zproto::Range* mutable_range();
   ::zproto::Range* release_range();
@@ -374,6 +397,7 @@ class SetEntry : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::zproto::AllocSvrEntry > allocs_;
+  ::google::protobuf::internal::ArenaStringPtr set_name_;
   ::zproto::Range* range_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
@@ -439,21 +463,10 @@ class Router : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
   ::google::protobuf::uint32 version() const;
   void set_version(::google::protobuf::uint32 value);
 
-  // optional string name = 2;
-  void clear_name();
-  static const int kNameFieldNumber = 2;
-  const ::std::string& name() const;
-  void set_name(const ::std::string& value);
-  void set_name(const char* value);
-  void set_name(const char* value, size_t size);
-  ::std::string* mutable_name();
-  ::std::string* release_name();
-  void set_allocated_name(::std::string* name);
-
-  // repeated .zproto.SetEntry sets = 3;
+  // repeated .zproto.SetEntry sets = 2;
   int sets_size() const;
   void clear_sets();
-  static const int kSetsFieldNumber = 3;
+  static const int kSetsFieldNumber = 2;
   const ::zproto::SetEntry& sets(int index) const;
   ::zproto::SetEntry* mutable_sets(int index);
   ::zproto::SetEntry* add_sets();
@@ -467,7 +480,6 @@ class Router : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::RepeatedPtrField< ::zproto::SetEntry > sets_;
-  ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::uint32 version_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
@@ -801,11 +813,18 @@ class FetchNextSequenceReq : public ::google::protobuf::Message /* @@protoc_inse
   ::google::protobuf::uint32 id() const;
   void set_id(::google::protobuf::uint32 value);
 
+  // optional uint32 version = 2;
+  void clear_version();
+  static const int kVersionFieldNumber = 2;
+  ::google::protobuf::uint32 version() const;
+  void set_version(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:zproto.FetchNextSequenceReq)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 id_;
+  ::google::protobuf::uint32 version_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
   friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
@@ -870,11 +889,18 @@ class GetCurrentSequenceReq : public ::google::protobuf::Message /* @@protoc_ins
   ::google::protobuf::uint32 id() const;
   void set_id(::google::protobuf::uint32 value);
 
+  // optional uint32 version = 2;
+  void clear_version();
+  static const int kVersionFieldNumber = 2;
+  ::google::protobuf::uint32 version() const;
+  void set_version(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:zproto.GetCurrentSequenceReq)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 id_;
+  ::google::protobuf::uint32 version_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
   friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
@@ -933,16 +959,26 @@ class SequenceRsp : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   // accessors -------------------------------------------------------
 
-  // optional uint64 sequence = 1;
+  // optional uint64 sequence = 2;
   void clear_sequence();
-  static const int kSequenceFieldNumber = 1;
+  static const int kSequenceFieldNumber = 2;
   ::google::protobuf::uint64 sequence() const;
   void set_sequence(::google::protobuf::uint64 value);
+
+  // optional .zproto.Router router = 3;
+  bool has_router() const;
+  void clear_router();
+  static const int kRouterFieldNumber = 3;
+  const ::zproto::Router& router() const;
+  ::zproto::Router* mutable_router();
+  ::zproto::Router* release_router();
+  void set_allocated_router(::zproto::Router* router);
 
   // @@protoc_insertion_point(class_scope:zproto.SequenceRsp)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::zproto::Router* router_;
   ::google::protobuf::uint64 sequence_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
@@ -1303,24 +1339,10 @@ class LoadMaxSeqsDataReq : public ::google::protobuf::Message /* @@protoc_insert
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 set_id = 1;
-  void clear_set_id();
-  static const int kSetIdFieldNumber = 1;
-  ::google::protobuf::uint32 set_id() const;
-  void set_set_id(::google::protobuf::uint32 value);
-
-  // optional uint32 alloc_id = 2;
-  void clear_alloc_id();
-  static const int kAllocIdFieldNumber = 2;
-  ::google::protobuf::uint32 alloc_id() const;
-  void set_alloc_id(::google::protobuf::uint32 value);
-
   // @@protoc_insertion_point(class_scope:zproto.LoadMaxSeqsDataReq)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 set_id_;
-  ::google::protobuf::uint32 alloc_id_;
   mutable int _cached_size_;
   friend void  protobuf_InitDefaults_seqsvr_2eproto_impl();
   friend void  protobuf_AddDesc_seqsvr_2eproto_impl();
@@ -1453,18 +1475,6 @@ class SaveMaxSeqReq : public ::google::protobuf::Message /* @@protoc_insertion_p
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 set_id = 1;
-  void clear_set_id();
-  static const int kSetIdFieldNumber = 1;
-  ::google::protobuf::uint32 set_id() const;
-  void set_set_id(::google::protobuf::uint32 value);
-
-  // optional uint32 alloc_id = 2;
-  void clear_alloc_id();
-  static const int kAllocIdFieldNumber = 2;
-  ::google::protobuf::uint32 alloc_id() const;
-  void set_alloc_id(::google::protobuf::uint32 value);
-
   // optional uint32 section_id = 3;
   void clear_section_id();
   static const int kSectionIdFieldNumber = 3;
@@ -1481,8 +1491,6 @@ class SaveMaxSeqReq : public ::google::protobuf::Message /* @@protoc_insertion_p
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 set_id_;
-  ::google::protobuf::uint32 alloc_id_;
   ::google::protobuf::uint64 max_seq_;
   ::google::protobuf::uint32 section_id_;
   mutable int _cached_size_;
@@ -1672,7 +1680,51 @@ inline const Range* Range::internal_default_instance() {
 
 // AllocSvrEntry
 
-// optional .zproto.IpPort addr = 1;
+// optional string alloc_name = 1;
+inline void AllocSvrEntry::clear_alloc_name() {
+  alloc_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& AllocSvrEntry::alloc_name() const {
+  // @@protoc_insertion_point(field_get:zproto.AllocSvrEntry.alloc_name)
+  return alloc_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void AllocSvrEntry::set_alloc_name(const ::std::string& value) {
+  
+  alloc_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:zproto.AllocSvrEntry.alloc_name)
+}
+inline void AllocSvrEntry::set_alloc_name(const char* value) {
+  
+  alloc_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:zproto.AllocSvrEntry.alloc_name)
+}
+inline void AllocSvrEntry::set_alloc_name(const char* value, size_t size) {
+  
+  alloc_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:zproto.AllocSvrEntry.alloc_name)
+}
+inline ::std::string* AllocSvrEntry::mutable_alloc_name() {
+  
+  // @@protoc_insertion_point(field_mutable:zproto.AllocSvrEntry.alloc_name)
+  return alloc_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* AllocSvrEntry::release_alloc_name() {
+  // @@protoc_insertion_point(field_release:zproto.AllocSvrEntry.alloc_name)
+  
+  return alloc_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void AllocSvrEntry::set_allocated_alloc_name(::std::string* alloc_name) {
+  if (alloc_name != NULL) {
+    
+  } else {
+    
+  }
+  alloc_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), alloc_name);
+  // @@protoc_insertion_point(field_set_allocated:zproto.AllocSvrEntry.alloc_name)
+}
+
+// optional .zproto.IpPort addr = 2;
 inline bool AllocSvrEntry::has_addr() const {
   return this != internal_default_instance() && addr_ != NULL;
 }
@@ -1711,7 +1763,7 @@ inline void AllocSvrEntry::set_allocated_addr(::zproto::IpPort* addr) {
   // @@protoc_insertion_point(field_set_allocated:zproto.AllocSvrEntry.addr)
 }
 
-// repeated .zproto.Range ranges = 2;
+// repeated .zproto.Range ranges = 3;
 inline int AllocSvrEntry::ranges_size() const {
   return ranges_.size();
 }
@@ -1748,7 +1800,51 @@ inline const AllocSvrEntry* AllocSvrEntry::internal_default_instance() {
 
 // SetEntry
 
-// repeated .zproto.AllocSvrEntry allocs = 1;
+// optional string set_name = 1;
+inline void SetEntry::clear_set_name() {
+  set_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& SetEntry::set_name() const {
+  // @@protoc_insertion_point(field_get:zproto.SetEntry.set_name)
+  return set_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void SetEntry::set_set_name(const ::std::string& value) {
+  
+  set_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:zproto.SetEntry.set_name)
+}
+inline void SetEntry::set_set_name(const char* value) {
+  
+  set_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:zproto.SetEntry.set_name)
+}
+inline void SetEntry::set_set_name(const char* value, size_t size) {
+  
+  set_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:zproto.SetEntry.set_name)
+}
+inline ::std::string* SetEntry::mutable_set_name() {
+  
+  // @@protoc_insertion_point(field_mutable:zproto.SetEntry.set_name)
+  return set_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* SetEntry::release_set_name() {
+  // @@protoc_insertion_point(field_release:zproto.SetEntry.set_name)
+  
+  return set_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void SetEntry::set_allocated_set_name(::std::string* set_name) {
+  if (set_name != NULL) {
+    
+  } else {
+    
+  }
+  set_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), set_name);
+  // @@protoc_insertion_point(field_set_allocated:zproto.SetEntry.set_name)
+}
+
+// repeated .zproto.AllocSvrEntry allocs = 2;
 inline int SetEntry::allocs_size() const {
   return allocs_.size();
 }
@@ -1778,7 +1874,7 @@ SetEntry::allocs() const {
   return allocs_;
 }
 
-// optional .zproto.Range range = 2;
+// optional .zproto.Range range = 3;
 inline bool SetEntry::has_range() const {
   return this != internal_default_instance() && range_ != NULL;
 }
@@ -1838,51 +1934,7 @@ inline void Router::set_version(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:zproto.Router.version)
 }
 
-// optional string name = 2;
-inline void Router::clear_name() {
-  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Router::name() const {
-  // @@protoc_insertion_point(field_get:zproto.Router.name)
-  return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Router::set_name(const ::std::string& value) {
-  
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:zproto.Router.name)
-}
-inline void Router::set_name(const char* value) {
-  
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:zproto.Router.name)
-}
-inline void Router::set_name(const char* value, size_t size) {
-  
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:zproto.Router.name)
-}
-inline ::std::string* Router::mutable_name() {
-  
-  // @@protoc_insertion_point(field_mutable:zproto.Router.name)
-  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Router::release_name() {
-  // @@protoc_insertion_point(field_release:zproto.Router.name)
-  
-  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Router::set_allocated_name(::std::string* name) {
-  if (name != NULL) {
-    
-  } else {
-    
-  }
-  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:zproto.Router.name)
-}
-
-// repeated .zproto.SetEntry sets = 3;
+// repeated .zproto.SetEntry sets = 2;
 inline int Router::sets_size() const {
   return sets_.size();
 }
@@ -2039,6 +2091,20 @@ inline void FetchNextSequenceReq::set_id(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:zproto.FetchNextSequenceReq.id)
 }
 
+// optional uint32 version = 2;
+inline void FetchNextSequenceReq::clear_version() {
+  version_ = 0u;
+}
+inline ::google::protobuf::uint32 FetchNextSequenceReq::version() const {
+  // @@protoc_insertion_point(field_get:zproto.FetchNextSequenceReq.version)
+  return version_;
+}
+inline void FetchNextSequenceReq::set_version(::google::protobuf::uint32 value) {
+  
+  version_ = value;
+  // @@protoc_insertion_point(field_set:zproto.FetchNextSequenceReq.version)
+}
+
 inline const FetchNextSequenceReq* FetchNextSequenceReq::internal_default_instance() {
   return &FetchNextSequenceReq_default_instance_.get();
 }
@@ -2060,6 +2126,20 @@ inline void GetCurrentSequenceReq::set_id(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:zproto.GetCurrentSequenceReq.id)
 }
 
+// optional uint32 version = 2;
+inline void GetCurrentSequenceReq::clear_version() {
+  version_ = 0u;
+}
+inline ::google::protobuf::uint32 GetCurrentSequenceReq::version() const {
+  // @@protoc_insertion_point(field_get:zproto.GetCurrentSequenceReq.version)
+  return version_;
+}
+inline void GetCurrentSequenceReq::set_version(::google::protobuf::uint32 value) {
+  
+  version_ = value;
+  // @@protoc_insertion_point(field_set:zproto.GetCurrentSequenceReq.version)
+}
+
 inline const GetCurrentSequenceReq* GetCurrentSequenceReq::internal_default_instance() {
   return &GetCurrentSequenceReq_default_instance_.get();
 }
@@ -2067,7 +2147,7 @@ inline const GetCurrentSequenceReq* GetCurrentSequenceReq::internal_default_inst
 
 // SequenceRsp
 
-// optional uint64 sequence = 1;
+// optional uint64 sequence = 2;
 inline void SequenceRsp::clear_sequence() {
   sequence_ = GOOGLE_ULONGLONG(0);
 }
@@ -2079,6 +2159,45 @@ inline void SequenceRsp::set_sequence(::google::protobuf::uint64 value) {
   
   sequence_ = value;
   // @@protoc_insertion_point(field_set:zproto.SequenceRsp.sequence)
+}
+
+// optional .zproto.Router router = 3;
+inline bool SequenceRsp::has_router() const {
+  return this != internal_default_instance() && router_ != NULL;
+}
+inline void SequenceRsp::clear_router() {
+  if (GetArenaNoVirtual() == NULL && router_ != NULL) delete router_;
+  router_ = NULL;
+}
+inline const ::zproto::Router& SequenceRsp::router() const {
+  // @@protoc_insertion_point(field_get:zproto.SequenceRsp.router)
+  return router_ != NULL ? *router_
+                         : *::zproto::Router::internal_default_instance();
+}
+inline ::zproto::Router* SequenceRsp::mutable_router() {
+  
+  if (router_ == NULL) {
+    router_ = new ::zproto::Router;
+  }
+  // @@protoc_insertion_point(field_mutable:zproto.SequenceRsp.router)
+  return router_;
+}
+inline ::zproto::Router* SequenceRsp::release_router() {
+  // @@protoc_insertion_point(field_release:zproto.SequenceRsp.router)
+  
+  ::zproto::Router* temp = router_;
+  router_ = NULL;
+  return temp;
+}
+inline void SequenceRsp::set_allocated_router(::zproto::Router* router) {
+  delete router_;
+  router_ = router;
+  if (router) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_set_allocated:zproto.SequenceRsp.router)
 }
 
 inline const SequenceRsp* SequenceRsp::internal_default_instance() {
@@ -2234,34 +2353,6 @@ inline const SequenceListRsp* SequenceListRsp::internal_default_instance() {
 
 // LoadMaxSeqsDataReq
 
-// optional uint32 set_id = 1;
-inline void LoadMaxSeqsDataReq::clear_set_id() {
-  set_id_ = 0u;
-}
-inline ::google::protobuf::uint32 LoadMaxSeqsDataReq::set_id() const {
-  // @@protoc_insertion_point(field_get:zproto.LoadMaxSeqsDataReq.set_id)
-  return set_id_;
-}
-inline void LoadMaxSeqsDataReq::set_set_id(::google::protobuf::uint32 value) {
-  
-  set_id_ = value;
-  // @@protoc_insertion_point(field_set:zproto.LoadMaxSeqsDataReq.set_id)
-}
-
-// optional uint32 alloc_id = 2;
-inline void LoadMaxSeqsDataReq::clear_alloc_id() {
-  alloc_id_ = 0u;
-}
-inline ::google::protobuf::uint32 LoadMaxSeqsDataReq::alloc_id() const {
-  // @@protoc_insertion_point(field_get:zproto.LoadMaxSeqsDataReq.alloc_id)
-  return alloc_id_;
-}
-inline void LoadMaxSeqsDataReq::set_alloc_id(::google::protobuf::uint32 value) {
-  
-  alloc_id_ = value;
-  // @@protoc_insertion_point(field_set:zproto.LoadMaxSeqsDataReq.alloc_id)
-}
-
 inline const LoadMaxSeqsDataReq* LoadMaxSeqsDataReq::internal_default_instance() {
   return &LoadMaxSeqsDataReq_default_instance_.get();
 }
@@ -2319,34 +2410,6 @@ inline const LoadMaxSeqsDataRsp* LoadMaxSeqsDataRsp::internal_default_instance()
 // -------------------------------------------------------------------
 
 // SaveMaxSeqReq
-
-// optional uint32 set_id = 1;
-inline void SaveMaxSeqReq::clear_set_id() {
-  set_id_ = 0u;
-}
-inline ::google::protobuf::uint32 SaveMaxSeqReq::set_id() const {
-  // @@protoc_insertion_point(field_get:zproto.SaveMaxSeqReq.set_id)
-  return set_id_;
-}
-inline void SaveMaxSeqReq::set_set_id(::google::protobuf::uint32 value) {
-  
-  set_id_ = value;
-  // @@protoc_insertion_point(field_set:zproto.SaveMaxSeqReq.set_id)
-}
-
-// optional uint32 alloc_id = 2;
-inline void SaveMaxSeqReq::clear_alloc_id() {
-  alloc_id_ = 0u;
-}
-inline ::google::protobuf::uint32 SaveMaxSeqReq::alloc_id() const {
-  // @@protoc_insertion_point(field_get:zproto.SaveMaxSeqReq.alloc_id)
-  return alloc_id_;
-}
-inline void SaveMaxSeqReq::set_alloc_id(::google::protobuf::uint32 value) {
-  
-  alloc_id_ = value;
-  // @@protoc_insertion_point(field_set:zproto.SaveMaxSeqReq.alloc_id)
-}
 
 // optional uint32 section_id = 3;
 inline void SaveMaxSeqReq::clear_section_id() {

@@ -33,6 +33,9 @@ static ZRpcStoreDispatcher g_rpc_store_dispatcher;
 ZRpcStoreDispatcher::ZRpcStoreDispatcher() {
   ZRpcUtil::Register("zproto.LoadMaxSeqsDataReq", ZRpcStoreDispatcher::LoadMaxSeqsData);
   ZRpcUtil::Register("zproto.SaveMaxSeqReq", ZRpcStoreDispatcher::SaveMaxSeq);
+
+  ZRpcUtil::Register("zproto.UpdateRouteTableReq", ZRpcStoreDispatcher::UpdateRouteTable);
+  ZRpcUtil::Register("zproto.GetRouteTableReq", ZRpcStoreDispatcher::GetRouteTable);
 }
 
 ProtoRpcResponsePtr ZRpcStoreDispatcher::LoadMaxSeqsData(RpcRequestPtr request) {

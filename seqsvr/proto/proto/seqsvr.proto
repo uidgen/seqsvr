@@ -36,13 +36,15 @@ message Range {
 }
 
 message AllocSvrEntry {
-  IpPort addr = 1;
-  repeated Range ranges = 2;
+  string alloc_name = 1;
+  IpPort addr = 2;
+  repeated Range ranges = 3;
 }
 
 message SetEntry {
-  repeated AllocSvrEntry allocs = 1;    // set集合
-  Range range = 2;                 // 号段范围
+  string set_name = 1;
+  repeated AllocSvrEntry allocs = 2;    // set集合
+  Range range = 3;                 // 号段范围
 }
 
 message Router {
@@ -74,17 +76,25 @@ message GetRouteTableRsp {
 // GetNextSequenceReq -> SequenceRsp
 message FetchNextSequenceReq {
   uint32 id = 1;
+  uint32 version = 2;   // 当前客户端版本号
 }
 
 // 查询当前Seq
 // GetCurrentSequenceReq -> SequenceRsp
 message GetCurrentSequenceReq {
   uint32 id = 1;
+  uint32 version = 2;   // 当前客户端版本号
 }
 
 // 返回
 message SequenceRsp {
-  uint64 sequence = 1;
+  // 1. 无法提供服务
+  // 2. id不存在，仅返回路由表
+  // 3. id存在，返回sequence，路由表未更新
+  // 4. id存在，返回sequence，路由表需要更新
+  // int32  result = 1;
+  uint64 sequence = 2;  // 可能未设置
+  Router router = 3;    // 如果版本号
 }
 
 // FetchNextSequenceListReq -> SequenceListRsp
@@ -111,8 +121,8 @@ message SequenceListRsp {
 // 加载max_seqs数据
 // LoadMaxSeqsDataReq -> LoadMaxSeqsDataRsp
 message LoadMaxSeqsDataReq {
-  uint32 set_id = 1;
-  uint32 alloc_id = 2;
+  // uint32 set_id = 1;
+  // uint32 alloc_id = 2;
 }
 
 // LoadMaxSeqsDataRsp
@@ -123,8 +133,8 @@ message LoadMaxSeqsDataRsp {
 // 加载max_seqs数据
 // SaveMaxSeqReq -> SaveMaxSeqRsp
 message SaveMaxSeqReq {
-  uint32 set_id = 1;
-  uint32 alloc_id = 2;
+  // uint32 set_id = 1;
+  // uint32 alloc_id = 2;
   uint32 section_id = 3;
   uint64 max_seq = 4;
 }

@@ -26,14 +26,12 @@
 
 int StoreServiceImpl::LoadMaxSeqsData(const zproto::LoadMaxSeqsDataReq& request, zproto::LoadMaxSeqsDataRsp* response) {
   auto max_seqs = response->mutable_max_seqs();
-  StoreSvrManager::GetInstance()->GetSectionsData(request.set_id(), request.alloc_id(), max_seqs);
+  StoreSvrManager::GetInstance()->GetSectionsData(max_seqs);
   return 0;
 }
 
 int StoreServiceImpl::SaveMaxSeq(const zproto::SaveMaxSeqReq& request, zproto::SaveMaxSeqRsp* response) {
-  uint64_t last_max_seq = StoreSvrManager::GetInstance()->SetSectionsData(request.set_id(),
-                                                                          request.alloc_id(),
-                                                                          request.section_id(),
+  uint64_t last_max_seq = StoreSvrManager::GetInstance()->SetSectionsData(request.section_id(),
                                                                           request.max_seq());
   response->set_last_max_seq(last_max_seq);
   return 0;
