@@ -15,49 +15,49 @@
  * limitations under the License.
  */
 
-// TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
-
 #ifndef	STORESVR_STORE_SERVER_H_
 #define	STORESVR_STORE_SERVER_H_
 
-#include <folly/io/async/EventBase.h>
+#include <thrift/lib/cpp2/server/ThriftServer.h>
 
 #include "nebula/base/configurable.h"
-#include "nebula/net/base_server.h"
+#include "nebula/base/base_daemon.h"
 
-struct StoreConfig : public nebula::Configurable {
-  virtual ~StoreConfig() = default;
-  
-  // Override from Configurable
-  bool SetConf(const std::string& conf_name, const folly::dynamic& conf) override {
-    folly::dynamic v = nullptr;
-    
-    v = Configurable::GetConfigValue(conf, "store_path");
-    if (v.isString()) store_path = v.asString();
-    v = Configurable::GetConfigValue(conf, "set_name");
-    if (v.isString()) set_name = v.asString();
+#include "base/section.h"
+#include "base/config.h"
 
-    return true;
-  }
-  
-  std::string store_path;
-  std::string set_name;
-};
-
-class StoreServer : public nebula::BaseServer {
+// 把存储层StoreSvr
+// StoreSvr为存储层，利用了多机NRW策略来保证数据持久化后不丢失
+//
+// NWR模型，把CAP的选择权交给了用户，让用户自己选择CAP中的哪两个。
+//
+// N代表N个副本（replication），
+// W代表写入数据时至少要写入W份副本才认为成功，
+// R表示读取数据时至少要读取R份副本。
+// 对于R和W的选择，要求W+R > N。
+class StoreServer : public nebula::BaseDaemon, public nebula::Configurable {
 public:
   StoreServer();
   ~StoreServer() override = default;
   
+  // Override from Configurable
+  bool SetConf(const std::string& conf_name, const folly::dynamic& conf) override;
+
 protected:
   bool Initialize() override;
+  bool Run() override;
+  void Quit() override;
   
-  bool Run() override {
-    BaseServer::Run();
-    return true;
-  }
+  // StoreConfig store_config_;
   
-  StoreConfig store_config_;
+private:
+  std::shared_ptr<apache::thrift::ThriftServer> server_;
+  
+  SetID set_id_;
+  IpAddrInfo addr_;
+  SetsConfig sets_;
+  std::string db_path_;
+  
 };
 
 #endif // STORESVR_STORE_SERVER_H_

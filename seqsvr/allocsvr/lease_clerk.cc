@@ -17,117 +17,113 @@
 
 #include "allocsvr/lease_clerk.h"
 
-#include "base/message_handler_util.h"
+// #include "base/message_handler_util.h"
 #include "nebula/base/time_util.h"
+#include "allocsvr/client_manager.h"
+
+
+LeaseClerk::LeaseClerk(nebula::TimerManager* timer_manager,
+    ClientManager* client,
+    LeaseCallback* cb)
+  : timer_manager_(timer_manager),
+    client_(client),
+    cb_(cb) {
+}
 
 // 开始租约服务
 void LeaseClerk::Start() {
-  // 已经启动不执行
-  if (is_valid_)
-    return;
-
+  // 只能执行一次
+  CHECK(state_ == STATE_NONE);
+  
+  LOG(INFO) << "Start lease...";
   // 启动以后请求租约
   RequestLease();
+  
+  // timer_manager_->ScheduleRepeatingTimeout(
+  //     std::bind(&LeaseClerk::RequestLease, this), SYNC_LEASE_TIMEOUT);
+
 }
 
 // 停止租约服务
 void LeaseClerk::Stop() {
-  if (!is_valid_)
-    return;
-
   timer_manager_->GetMainEventBase()
       ->runImmediatelyOrRunInEventBaseThreadAndWait([this] {
         // 启动检查租约失效
-        timer_manager_->GetHHWheelTimer()->cancelAll();
+        timer_manager_->cancelAll();
       });
 }
 
-void LeaseClerk::RequestLease() {
-  zproto::GetRouteTableReq get_route_table_req;
-  ZRpcClientCall<zproto::GetRouteTableRsp>(
-      "store_client", MakeRpcRequest(get_route_table_req),
-      [this](std::shared_ptr<ApiRpcOk<zproto::GetRouteTableRsp>> rpc_ok,
-             ProtoRpcResponsePtr rpc_error) -> int {
-        if (rpc_error) {
-          LOG(ERROR) << "RequestRouteTable - rpc_error: "
-                     << rpc_error->ToString();
-          // this->OnSave(false);
-        } else {
-          LOG(INFO) << "RequestRouteTable - rpc_ok: " << rpc_ok->ToString();
-          OnHandleLease((*rpc_ok)->router());
-        }
-        return 0;
-      });
+int LeaseClerk::RequestLease() {
+  LOG(INFO) << "RequestLease - LoadRouteTable...";
+  // TODO(@benqi):
+  // 同步失败后需要停止服务
+  // 一旦成功收到，则表示续租成功
+  seqsvr::Router router;
+  auto r = client_->LoadRouteTable(router);
+  if (r==0) {
+    auto now = NowInMsecTime();
+    lease_invalid_time_ = now + LEASE_TIMEOUT;
+    LOG(INFO) << "RequestLease - LoadRouteTable ok: now=" << now
+            << ", lease_invalid_time = " << lease_invalid_time_;
+
+    return OnHandleLease(router);
+  } else {
+    LOG(ERROR) << "RequestLease - LoadRouteTable error";
+    // timer_manager_->ScheduleOneShotTimeout(
+    //    std::bind(&LeaseClerk::RequestLease, this), SYNC_LEASE_TIMEOUT);
+  }
+  return 0;
 }
 
-void LeaseClerk::OnHandleLease(const zproto::Router &router) {
-  int cb = -1;
-  {
-    std::lock_guard<std::mutex> g(lock_);
-    lease_invalid_time_ = NowInMsecTime() + LEASE_TIMEOUT;
-    if (router.version() > version_) {
-      version_ = router.version();
-      if (!is_valid_) {
-        is_valid_ = true;
-        cb = 0;
-      } else {
-        cb = 1;
-      }
-    } else {
-    }
-  }
-
-  if (cb_ && cb != -1) {
-    RouteTable table;
-    table.ParseFromRouter(router);
-    if (cb == 0) {
-      cb_->OnLeaseValid(table);
-    } else {
-      cb_->OnLeaseUpdated(table);
-    }
-  }
-
-  // 数据已达
-  timer_manager_->GetMainEventBase()->runInEventBaseThread([cb, this] {
-    if (cb == 0) {
+int LeaseClerk::OnHandleLease(seqsvr::Router& router) {
+  // 租约是否生效？
+  if (router.version > version_) {
+    version_ = router.version;
+    if (state_ != STATE_VALID) {
+      state_ = STATE_VALID;
+  
+      LOG(INFO) << "OnHandleLease - is_valid";
+      // 租约生效
+      cb_->OnLeaseValid(router);
+      
+      // 数据已达
+      // timer_manager_->GetMainEventBase()->runInEventBaseThread([this] {
       // 启动检查租约失效
-      timer_manager_->GetHHWheelTimer()->cancelAll();
+      timer_manager_->cancelAll();
+      LOG(INFO) << "OnHandleLease - start timer...";
       timer_manager_->ScheduleRepeatingTimeout(
           std::bind(&LeaseClerk::CheckLeaseValid, this), CHECK_LEASE_TIMEOUT);
+      timer_manager_->ScheduleRepeatingTimeout(
+          std::bind(&LeaseClerk::RequestLease, this), SYNC_LEASE_TIMEOUT);
+      return 1;
     }
-
-    timer_manager_->ScheduleOneShotTimeout(
-        std::bind(&LeaseClerk::RequestLease, this), SYNC_LEASE_TIMEOUT);
-  });
+  }
+  
+  return 0;
 }
 
-void LeaseClerk::CheckLeaseValid() {
+int LeaseClerk::CheckLeaseValid() {
   auto now = NowInMsecTime();
-
+  
+  // 租约检查
   LOG(WARNING) << "CheckLeaseValid - check: now=" << now
                << ", lease_invalid_time = " << lease_invalid_time_;
 
-  bool is_valid = true;
-  {
-    std::lock_guard<std::mutex> g(lock_);
-    if (is_valid_) {
-      if (now > lease_invalid_time_) {
-        is_valid_ = false;
-        LOG(WARNING) << "CheckLeaseValid - lease_invalid_time";
-      }
-    }
+  if (now > lease_invalid_time_) {
+    if (state_ == STATE_VALID) {
 
-    is_valid = is_valid_;
-  }
-
-  if (!is_valid) {
-    timer_manager_->GetMainEventBase()->runInEventBaseThread(
-        [this] {
-          timer_manager_->GetHHWheelTimer()->cancelAll();
-        });
-  } else {
-    if (cb_) {
+      state_ = STATE_INVALID;
       cb_->OnLeaseInvalid();
+      version_ = 0;
+      LOG(WARNING) << "CheckLeaseValid - cancel, state: " << state_;
+      // lease_invalid_time";
+      timer_manager_->cancelAll();
+      timer_manager_->ScheduleRepeatingTimeout(
+          std::bind(&LeaseClerk::RequestLease, this), SYNC_LEASE_TIMEOUT);
+      return 1;
+
     }
   }
+  
+  return 0;
 }

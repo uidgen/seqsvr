@@ -15,22 +15,24 @@
  * limitations under the License.
  */
 
-// TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
+#include "base/set.h"
 
-#ifndef	SEQSVR_ZRPC_SEQ_DISPATCHER_H_
-#define	SEQSVR_ZRPC_SEQ_DISPATCHER_H_
+#include "nebula/base/logger/glog_util.h"
 
-#include "nebula/net/zproto/zproto_package_data.h"
-
-class ZRpcSeqDispatcher {
-public:
-  ZRpcSeqDispatcher();
-  ~ZRpcSeqDispatcher() = default;
+uint64_t Set::SetMaxSeq(uint32_t id, uint64_t max_seq) {
+  auto idx = CalcSectionID(set_id, id);
+  if (!idx.first) {
+    LOG(ERROR) << "SetSectionsData - max_seq invalid: local seq = "
+      << id << ", req seq = " << max_seq
+      << ", in set: " << ToString();
+    
+    return 0;
+  }
   
-  static ProtoRpcResponsePtr FetchNextSequence(RpcRequestPtr request);
-  static ProtoRpcResponsePtr GetCurrentSequence(RpcRequestPtr request);
-  static ProtoRpcResponsePtr FetchNextSequenceList(RpcRequestPtr request);
-  static ProtoRpcResponsePtr GetCurrentSequenceList(RpcRequestPtr request);
-};
-
-#endif // SEQSVR_RPC_SEQ_DISPATCHER_H_
+  if (max_seq > set_max_seqs_data[idx.second]) {
+    max_seq = (max_seq/kSeqStep+1)*kSeqStep;
+    set_max_seqs_data[idx.second] = max_seq;
+  }
+  
+  return max_seq;
+}

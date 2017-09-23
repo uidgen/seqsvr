@@ -19,21 +19,34 @@
 #define	MEDIATESVR_MEDIATE_SERVER_H_
 
 #include <folly/io/async/EventBase.h>
+#include <thrift/lib/cpp2/server/ThriftServer.h>
 
-#include "nebula/net/base_server.h"
+#include "nebula/base/base_daemon.h"
 
-// 仲裁服务的一个主要功能探测AllocSvr
-// 一般会引入第三方服务，比如etcd或zookeeper
+// 仲裁服务的一个主要功能探测AllocSvr:
+// 这里需要引入一个仲裁服务，探测AllocSvr的服务状态，决定每个uid段由哪台AllocSvr加载。
+// 出于可靠性的考虑，仲裁模块并不直接操作AllocSvr，而是将加载配置写到StoreSvr持久化，
+// 然后AllocSvr定期访问StoreSvr读取最新的加载配置，决定自己的加载状态。
+//
+// TODO(@benq): 引入第三方服务，比如etcd或zookeeper
 // 当前暂不实现AllocSvr探测，提供一个api接口更新StoreSvr里的路由表
-class MediateServer : public nebula::BaseServer {
+class MediateServer : public nebula::BaseDaemon {
 public:
   MediateServer() = default;
   ~MediateServer() override = default;
   
 protected:
-  // From BaseServer
+  // 不使用自动配置框架
+  bool LoadConfig(const std::string& config_file) override {
+    return true;
+  }
+  
   bool Initialize() override;
   bool Run() override;
+  void Quit() override;
+  
+private:
+  std::shared_ptr<apache::thrift::ThriftServer> server_;
 };
 
 #endif // MEDIATESVR_MEDIATE_SERVER_H_

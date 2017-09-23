@@ -22,9 +22,37 @@
 
 #include "nebula/base/time_util.h"
 
-void RouteTable::ParseFromRouter(const zproto::Router& router) {
+/////////////////////////////////////////////////////////////////////////
+// 构建测试用路由表
+void RouterTableManager::MakeTestRouteTable(seqsvr::Router& table) {
+  
+}
+
+/////////////////////////////////////////////////////////////////////////
+// 从配置文件加载所有路由表
+void RouterTableManager::Initialize(const std::list<seqsvr::SetNodeInfo>& node_list) {
+  
+}
+
+// AllocSvr节点上线和下线
+void RouterTableManager::OnAllocSvrRegister(const seqsvr::SetNodeInfo& node) {
+  
+}
+
+void RouterTableManager::OnAllocSvrUnRegister(const seqsvr::SetNodeInfo& node) {
+  
+}
+
+void RouterTableManager:: ToRouterTable(seqsvr::Router& table) const {
+  
+}
+
+
+#if 0
+void RouteTable::ParseFromRouter(const seqsvr::Router& router) {
   Clear();
   
+/*
   version_ = router.version();
   
   for (int i=0; i<router.sets_size(); ++i) {
@@ -59,11 +87,13 @@ void RouteTable::ParseFromRouter(const zproto::Router& router) {
     }
     sets_.push_back(set);
   }
+ */
 }
 
-void RouteTable::SerializeToRouter(zproto::Router* router) const {
+void RouteTable::SerializeToRouter(seqsvr::Router* router) const {
   router->set_version(version_);
   
+  /*
   for (auto& set : sets_) {
     auto s = router->add_sets();
     s->set_set_name(set.set_name);
@@ -83,6 +113,7 @@ void RouteTable::SerializeToRouter(zproto::Router* router) const {
       }
     }
   }
+   */
 }
 
 void RouteTable::MakeTestRouteTable(RouteTable& table) {
@@ -171,3 +202,4 @@ void RouteTableManager::Initialize(RouteTable& table) {
   route_search_table_.Initialize(route_table_);
 }
 
+#endif

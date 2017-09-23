@@ -18,10 +18,12 @@
 #include "allocsvr/allocsvr_manager.h"
 
 #include <boost/filesystem.hpp>
+
 #include <folly/FileUtil.h>
 #include <folly/Range.h>
+#include <folly/io/async/EventBaseManager.h>
 
-#include "base/message_handler_util.h"
+// #include "base/message_handler_util.h"
 // #include "storesvr/storesvr_manager.h"
 
 /*
@@ -37,15 +39,31 @@ std::shared_ptr<AllocSvrManager> AllocSvrManager::GetInstance() {
   return g_allocsvr_manager.try_get();
 }
 
-void AllocSvrManager::Initialize(nebula::TimerManager* timer_manager, const std::string& set_name, const std::string& alloc_name) {
+void AllocSvrManager::Initialize(nebula::TimerManager* timer_manager,
+         const IpAddrInfo& alloc_addr,
+         const IpAddrInfoList& store_addr_list) {
+  
+  alloc_addr_ = alloc_addr;
+  store_addr_list_ = store_addr_list;
+  
+  // 初始化store_client
+  client_ = std::make_unique<ClientManager>(
+        folly::EventBaseManager::get()->getEventBase(),
+        store_addr_list);
+  
+  LOG(INFO) << "client...";
   // 首先加载路由表
   // 加载成功后再加载max_seq
-  set_name_ = set_name;
-  alloc_name_ = alloc_name;
-  
-  lease_ = std::make_unique<LeaseClerk>(timer_manager, this);
-  lease_->Start();
-  
+
+  lease_ = std::make_unique<LeaseClerk>(timer_manager, client_.get(), this);
+
+  auto evb = folly::EventBaseManager::get()->getEventBase();
+  evb->runImmediatelyOrRunInEventBaseThreadAndWait([&]() {
+    LOG(INFO) << "evb...";
+    lease_->Start();
+    // LoadMaxSeq();
+  });
+
 /*
   // 1. 初始化set_id_和alloc_id_
   set_id_ = set_id;
@@ -61,86 +79,84 @@ void AllocSvrManager::Destroy() {
   }
 }
 
-//uint64_t AllocSvrManager::GetCurrentSequence(uint32_t id) {
-//#ifdef DEBUG_TEST
-//  DCHECK(id<kMaxIDSize);
-//#endif
-//  std::lock_guard<std::mutex> g(mutex_);
-//  return cur_seqs_[id];
-//}
-//
-//uint64_t AllocSvrManager::FetchNextSequence(uint32_t id) {
-//#ifdef DEBUG_TEST
-//  DCHECK(id<kMaxIDSize);
-//#endif
-//  
-//  auto idx = id/kSectionSize;
-//  
-//  std::lock_guard<std::mutex> g(mutex_);
-//  auto seq = ++cur_seqs_[id];
-//  if (seq > section_max_seqs_[idx]) {
-//    ++section_max_seqs_[idx];
-//    SaveMaxSeq(idx, section_max_seqs_[idx]);
-//  }
-//  return seq;
-//}
-
-bool AllocSvrManager::GetCurrentSequence(uint32_t id, uint32_t client_version, SequenceWithRouterTable& o) {
-  if (!cache_alloc_entry_) return false;
+bool AllocSvrManager::GetCurrentSequence(uint32_t id, uint32_t client_version, seqsvr::Sequence& o) {
+  if (!cache_my_node_) return false;
   if (state_ != kAllocInited) return false;
   
-  for (auto & v : cache_alloc_entry_->ranges ) {
-    if (id>=v.id && id<v.id+v.size) {
-      o.seq = cur_seqs_[id];
-      if (client_version < table_.version()) {
-        o.router = new zproto::Router;
-        table_.SerializeToRouter(o.router);
+  for (auto & v : cache_my_node_->section_ranges ) {
+    auto idx = CalcSectionID(v.id_begin, v.size, id);
+    if (idx.first) {
+      o.sequence = cur_seqs_[id-v.id_begin];
+      if (client_version < table_.version) {
+        o.router = table_;
       }
       return true;
     }
   }
-  
+
+  LOG(INFO) << "GetCurrentSequence - id: " << id
+      << ", client_version: " << client_version
+      << ", sequence: " << o.sequence;
+
   return false;
 }
 
-bool AllocSvrManager::FetchNextSequence(uint32_t id, uint32_t client_version, SequenceWithRouterTable& o) {
-  if (!cache_alloc_entry_) return false;
+// id计算公式
+//idx =  (id-node.id_begin)
+bool AllocSvrManager::FetchNextSequence(uint32_t id, uint32_t client_version, seqsvr::Sequence& o) {
+  if (!cache_my_node_) return false;
   if (state_ != kAllocInited) return false;
   
-  for (auto & v : cache_alloc_entry_->ranges ) {
-    if (id>=v.id && id<v.id+v.size) {
-      auto idx = id/kSectionSize;
-      
-      o.seq = ++cur_seqs_[id];
-      if (o.seq > section_max_seqs_[idx]) {
-        ++section_max_seqs_[idx];
-        SaveMaxSeq(idx, section_max_seqs_[idx]);
+  for (auto & v : cache_my_node_->section_ranges ) {
+    auto idx = CalcSectionID(v.id_begin, v.size, id);
+    if (idx.first) {
+      o.sequence = ++cur_seqs_[id-v.id_begin];
+      if (o.sequence > section_max_seqs_[idx.second]) {
+        SaveMaxSeq(id, o.sequence);
+        // TODO(@benqi): 使用返回值填充
+        section_max_seqs_[idx.second] += kSeqStep;
       }
-
-      if (client_version < table_.version()) {
-        o.router = new zproto::Router;
-        table_.SerializeToRouter(o.router);
+      if (client_version < table_.version) {
+        o.router = table_;
       }
       return true;
     }
   }
   
+  LOG(INFO) << "FetchNextSequence - id: " << id
+    << ", client_version: " << client_version
+    << ", sequence: " << o.sequence;
+
   return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // 租约生效
-void AllocSvrManager::OnLeaseValid(RouteTable& table) {
-  table_.Swap(table);
-  // route_search_table_.Initialize(table_);
-  cache_alloc_entry_ = table_.LookupAlloc(set_name_, alloc_name_);
-  state_ = kAllocWaitLoadSeq;
-  LoadMaxSeq();
+void AllocSvrManager::OnLeaseValid(seqsvr::Router& router) {
+  table_ = router;
+
+  seqsvr::RouterNode* p = nullptr;
+  for (size_t i=0; i< table_.node_list.size(); ++i) {
+    auto& v = table_.node_list[i].node_addr;
+    if (v.ip == alloc_addr_.addr && v.port == alloc_addr_.port) {
+      p = &(table_.node_list[i]);
+      LOG(INFO) << "Lookup alloc node: " << "";
+
+      // TODO(@benqi): wait_load_seq...
+      state_ = kAllocWaitLoadSeq;
+    }
+  }
+
+  if (!p) {
+    LOG(ERROR) << "Not found!";
+  } else {
+    cache_my_node_ = p;
+  }
 }
 
 // 路由表更新
-void AllocSvrManager::OnLeaseUpdated(RouteTable& table) {
-  table_.Swap(table);
+void AllocSvrManager::OnLeaseUpdated(seqsvr::Router& router) {
+//  table_.Swap(table);
 }
 
 // 租约失效
@@ -154,71 +170,40 @@ void AllocSvrManager::LoadMaxSeq() {
   // 2. 去storesvr加载max_seqs
   state_ = kAllocWaitRouteTable;
   
-  zproto::LoadMaxSeqsDataReq load_max_seqs_data_req;
-  ZRpcClientCall<zproto::LoadMaxSeqsDataRsp>(
-     "store_client",
-     MakeRpcRequest(load_max_seqs_data_req),
-     [&] (std::shared_ptr<ApiRpcOk<zproto::LoadMaxSeqsDataRsp>> load_max_seqs_data_rsp,
-          ProtoRpcResponsePtr rpc_error) -> int {
-       if (rpc_error) {
-         LOG(ERROR) << "LoadMaxSeqsDataReq - rpc_error: " << rpc_error->ToString();
-         OnMaxSeqLoaded("");
-       } else {
-         LOG(INFO) << "LoadMaxSeqsDataReq - load_max_seqs_data_rsp: "
-                    << load_max_seqs_data_rsp->ToString();
-         OnMaxSeqLoaded((*load_max_seqs_data_rsp)->max_seqs());
-       }
-       return 0;
-  });
+  seqsvr::MaxSeqsData max_seqs_data;
+  client_->LoadMaxSeqsData(max_seqs_data);
+  OnMaxSeqLoaded(max_seqs_data);
 
-  // 先使用StoreSvrManager加载，跑通流程
-  // auto store = StoreSvrManager::GetInstance();
-  // store->Initialize(set_id, "/tmp/seq.dat");
-  // std::string max_seqs_data = store->GetSectionsData(set_id, alloc_id);
-  // OnLoad(max_seqs_data);
 }
 
-void AllocSvrManager::SaveMaxSeq(uint32_t section_id, uint64_t section_max_seq) {
+void AllocSvrManager::SaveMaxSeq(uint32_t id, uint64_t section_max_seq) {
   // TODO(@beqni): NWR写
-//  auto store = StoreSvrManager::GetInstance();
-//  bool rv = store->SetSectionsData(set_id, alloc_id, section_id, section_max_seq);
   
-  zproto::SaveMaxSeqReq save_max_seq_req;
-  save_max_seq_req.set_section_id(section_id);
-  save_max_seq_req.set_max_seq(section_max_seq);
-  
-  ZRpcClientCall<zproto::SaveMaxSeqRsp>(
-    "store_client",
-    MakeRpcRequest(save_max_seq_req),
-    [section_max_seq, this] (std::shared_ptr<ApiRpcOk<zproto::SaveMaxSeqRsp>> save_max_seq_rsp,
-                             ProtoRpcResponsePtr rpc_error) -> int {
-      if (rpc_error) {
-        LOG(ERROR) << "SaveMaxSeqReq - rpc_error: " << rpc_error->ToString();
-        this->OnMaxSeqSaved(false);
-      } else {
-        LOG(INFO) << "SaveMaxSeqReq - load_max_seqs_data_rsp: " << save_max_seq_rsp->ToString();
-        this->OnMaxSeqSaved((*save_max_seq_rsp)->last_max_seq() == section_max_seq-1);
-      }
-      return 0;
-  });
+  client_->SaveMaxSeq(id, section_max_seq);
 }
 
-void AllocSvrManager::OnMaxSeqLoaded(const std::string& data) {
-  if (!data.empty()) {
-    // TODO(@benqi): 检查数据是否合法
-    // 复制数据
-    memcpy(section_max_seqs_.data(), data.c_str(), data.length());
-    // 将cur_seq设置为max_seq
-    for (int i=0; i<kSectionSlotSize-1; ++i) {
-      std::fill(cur_seqs_.begin()+i*kSectionSize, cur_seqs_.begin()+(i+1)*kSectionSize, section_max_seqs_[i]);
-    }
-
-    std::fill(cur_seqs_.begin()+(kSectionSlotSize-1)*kSectionSize, cur_seqs_.end(), section_max_seqs_[kSectionSlotSize-1]);
-
-    state_ = kAllocInited;
-  } else {
-    state_ = kAllocError;
+void AllocSvrManager::OnMaxSeqLoaded(seqsvr::MaxSeqsData& data) {
+  // TODO(@benqi): 检查数据是否合法
+  // 复制数据
+  // LOG(INFO) << "OnMaxSeqLoaded - data len = " << data.length();
+  section_max_seqs_.swap(data.max_seqs);
+  // resize(data.length()/8);
+  // LOG(INFO) << "OnMaxSeqLoaded - section_max_seqs size = " << section_max_seqs_.size();
+  // memcpy(section_max_seqs_.data(), data.c_str(), data.length());
+  
+  // 将cur_seq设置为max_seq
+  cur_seqs_.resize(section_max_seqs_.size()*kPerSectionIdSize);
+  LOG(INFO) << "OnMaxSeqLoaded - set cur_seqs len = " << cur_seqs_.size();
+  for (size_t i=0; i<section_max_seqs_.size(); ++i) {
+    std::fill(cur_seqs_.begin()+i*kPerSectionIdSize,
+              cur_seqs_.begin()+(i+1)*kPerSectionIdSize,
+              section_max_seqs_[i]);
   }
+  
+  LOG(INFO) << "OnMaxSeqLoaded - set cur_seqs end";
+  // << section_max_seqs_.size()*kPerSectionIdSize;
+  
+  state_ = kAllocInited;
 }
 
 void AllocSvrManager::OnMaxSeqSaved(bool result) {

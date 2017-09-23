@@ -53,9 +53,7 @@ void UpdateRouteTable(const proxygen::HTTPMessage& headers, folly::IOBufQueue* b
 
 // AllocSvr加入和移除集群
 void AddAllocSvr(const proxygen::HTTPMessage& headers, folly::IOBufQueue*, proxygen::ResponseBuilder* r) {
-  
 }
 
 void RemoveAllocSvr(const proxygen::HTTPMessage& headers, folly::IOBufQueue*, proxygen::ResponseBuilder* r) {
-  
 }

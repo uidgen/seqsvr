@@ -17,24 +17,16 @@
 include_directories(. .. ../../nebula)
 
 set (SRC_LIST
-  ../base/section.h
-  ../base/set.h
   store_server.cc
   store_server.h
   storesvr_manager.cc
   storesvr_manager.h
-  zrpc_store_dispatcher.cc
-  zrpc_store_dispatcher.h
-  zrpc_store_service.cc
-  zrpc_store_service.h
-  store_service_impl.cc
-  store_service_impl.h
-
-  ../proto/cc/seqsvr.pb.cc
-  ../proto/cc/seqsvr.pb.h
-  ../proto/proto/seqsvr.proto
+  store_service_handler.cc
+  store_service_handler.h
   )
 
 add_executable (storesvr ${SRC_LIST})
-target_link_libraries (storesvr net base protobuf)
+# target_link_libraries (storesvr net base protobuf)
+target_link_libraries (storesvr seqsvr_base base seqsvr_gen-cpp2 boost_system boost_filesystem pthread glog gflags folly thrift thriftcpp2 thriftprotocol zstd ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} dl)
 
+add_subdirectory(test)

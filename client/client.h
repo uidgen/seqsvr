@@ -20,15 +20,20 @@
 
 #include <folly/io/async/EventBase.h>
 
-#include "nebula/net/base_server.h"
+#include "nebula/base/base_daemon.h"
 
-class Client : public nebula::BaseServer {
+class Client : public nebula::BaseDaemon {
 public:
   Client() = default;
   ~Client() override = default;
   
 protected:
-  // From BaseServer
+  // From BaseDaemon
+  // 不使用自动配置框架
+  bool LoadConfig(const std::string& config_file) override {
+    return true;
+  }
+
   bool Initialize() override;
   bool Run() override;
   

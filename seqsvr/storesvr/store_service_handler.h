@@ -17,19 +17,21 @@
 
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
-#ifndef	SEQSVR_SEQ_SERVICE_IMPL_H_
-#define	SEQSVR_SEQ_SERVICE_IMPL_H_
+#ifndef	STORESVR_STORE_SERVICE_HANDLER_H_
+#define	STORESVR_STORE_SERVICE_HANDLER_H_
 
-#include "seqsvr/zrpc_seq_service.h"
+#include "proto/gen-cpp2/StoreService.h"
 
-class SeqServiceImpl : public ZRpcSeqService {
+class StoreServiceHandler : public seqsvr::StoreServiceSvIf {
 public:
-  virtual ~SeqServiceImpl() = default;
+  virtual ~StoreServiceHandler() = default;
   
-  int FetchNextSequence(const zproto::FetchNextSequenceReq& request, zproto::SequenceRsp* response) override;
-  int GetCurrentSequence(const zproto::GetCurrentSequenceReq& request, zproto::SequenceRsp* response) override;
-  int FetchNextSequenceList(const zproto::FetchNextSequenceListReq& request, zproto::SequenceListRsp* response) override;
-  int GetCurrentSequenceList(const zproto::GetCurrentSequenceListReq& request, zproto::SequenceListRsp* response) override;
+  void LoadMaxSeqsData(seqsvr::MaxSeqsData& _return) override;
+  int64_t SaveMaxSeq(int32_t id, int64_t max_seq) override;
+  
+  void LoadRouteTable(seqsvr::Router& _return) override;
+
+  bool SaveRouteTable(std::unique_ptr<seqsvr::Router> router) override;
 };
 
 #endif

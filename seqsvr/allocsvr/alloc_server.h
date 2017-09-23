@@ -20,19 +20,34 @@
 #ifndef	ALLOCSVR_ALLOC_SERVER_H_
 #define	ALLOCSVR_ALLOC_SERVER_H_
 
-#include <folly/io/async/EventBase.h>
+#include <thrift/lib/cpp2/server/ThriftServer.h>
 
-#include "nebula/net/base_server.h"
+#include "nebula/base/base_daemon.h"
 
-class AllocServer : public nebula::BaseServer {
+#include "base/section.h"
+#include "base/config.h"
+
+// 缓存中间层AllocSvr。
+// AllocSvr则是缓存中间层，部署于多台机器，
+// 每台AllocSvr负责若干号段的sequence分配，分摊海量的sequence申请请求。
+class AllocServer : public nebula::BaseDaemon, public nebula::Configurable {
 public:
-  AllocServer() = default;
+  AllocServer();
   ~AllocServer() override = default;
   
+  // Override from Configurable
+  bool SetConf(const std::string& conf_name, const folly::dynamic& conf) override;
+
 protected:
   bool Initialize() override;
-  
   bool Run() override;
+  void Quit() override;
+  
+private:
+  IpAddrInfo addr_;
+  SetsConfig sets_;
+
+  std::shared_ptr<apache::thrift::ThriftServer> server_;
 };
 
 #endif // ALLOCSVR_ALLOC_SERVER_H_

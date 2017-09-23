@@ -18,13 +18,17 @@
 // TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
 
 #include "seqsvr/seq_server.h"
+
 #include "seqsvr/sequence_manager.h"
+#include "seqsvr/sequence_service_handler.h"
+
+// using namespace apache::thrift;
 
 bool SeqServer::Initialize() {
   SequenceManager::GetInstance()->Initialize("/tmp/seq.dat");
-  
-  RegisterService("seq_server", "rpc_server", "zrpc");
-  BaseServer::Initialize();
+
+  // RegisterService("seq_server", "rpc_server", "zrpc");
+  // BaseServer::Initialize();
   
 #if 0
   // one
@@ -39,7 +43,37 @@ bool SeqServer::Initialize() {
   }, 1000);
 #endif
   
+/*
+  folly::init(&argc, &argv, true);
+  
+  auto handler = make_shared<NebulaThriftTestHandler>();
+  auto server = make_shared<ThriftServer>();
+  server->setInterface(handler);
+  server->setPort(9090);
+  
+  printf("Starting the server...\n");
+  server->serve();
+  printf("done.\n");
+ */
+  
   return true;
+}
+
+bool SeqServer::Run() {
+  // auto channel = std::make_shared<apache::thrift::HeaderServerChannel>();
+  auto handler = std::make_shared<SequenceServiceHandler>();
+  server_ = std::make_shared<apache::thrift::ThriftServer>();
+  server_->setInterface(handler);
+  server_->setPort(9090);
+  
+  printf("Starting the server...\n");
+  server_->serve();
+  printf("done.\n");
+  return true;
+}
+
+void SeqServer::Quit() {
+  server_->stop();
 }
 
 int main(int argc, char* argv[]) {

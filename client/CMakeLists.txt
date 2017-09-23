@@ -23,11 +23,8 @@ set (SRC_LIST
   client_command_handler.h
   ../../nebula/nebula/base/readline_gets.cc
   ../../nebula/nebula/base/readline_gets.h
-  ../seqsvr/proto/cc/seqsvr.pb.cc
-  ../seqsvr/proto/cc/seqsvr.pb.h
-  ../seqsvr/base/message_handler_util.h
   )
 
 add_executable (client ${SRC_LIST})
-target_link_libraries (client net base protobuf readline)
+target_link_libraries (client seqsvr_base base seqsvr_gen-cpp2 boost_system boost_filesystem pthread glog gflags folly thrift thriftcpp2 thriftprotocol zstd ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} readline dl)
 

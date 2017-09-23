@@ -15,27 +15,31 @@
  * limitations under the License.
  */
 
-// TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
-
 #ifndef	SEQSVR_SEQ_SERVER_H_
 #define	SEQSVR_SEQ_SERVER_H_
 
 #include <folly/io/async/EventBase.h>
+#include <thrift/lib/cpp2/server/ThriftServer.h>
 
-#include "nebula/net/base_server.h"
+#include "nebula/base/base_daemon.h"
 
-class SeqServer : public nebula::BaseServer {
+class SeqServer : public nebula::BaseDaemon {
 public:
   SeqServer() = default;
   ~SeqServer() override = default;
   
 protected:
-  bool Initialize() override;
-  
-  bool Run() override {
-    BaseServer::Run();
+  // 不使用自动配置框架
+  bool LoadConfig(const std::string& config_file) override {
     return true;
   }
+  
+  bool Initialize() override;
+  bool Run() override;
+  void Quit() override;
+
+private:
+  std::shared_ptr<apache::thrift::ThriftServer> server_;
 };
 
 #endif // SEQSVR_SEQ_SERVER_H_

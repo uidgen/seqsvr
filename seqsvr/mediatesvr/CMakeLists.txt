@@ -17,6 +17,10 @@
 include_directories(. .. ../../nebula)
 
 set (SRC_LIST
+  ../../../nebula/nebula/net/base/ip_addr_info.cc
+  ../../../nebula/nebula/net/base/ip_addr_info.h
+  ../base/config.cc
+  ../base/config.h
   ../base/section.h
   ../base/set.h
   ../base/router_table.cc
@@ -24,14 +28,11 @@ set (SRC_LIST
 
   mediate_server.cc
   mediate_server.h
-  mediate_handler.cc
-  mediate_handler.h
-
-  ../proto/cc/seqsvr.pb.cc
-  ../proto/cc/seqsvr.pb.h
-  ../proto/proto/seqsvr.proto
-  )
+  mediate_service_handler.cc
+  mediate_service_handler.h
+)
 
 add_executable (mediatesvr ${SRC_LIST})
-target_link_libraries (mediatesvr net base protobuf)
+#target_link_libraries (mediatesvr net base protobuf)
+target_link_libraries (mediatesvr seqsvr_base base seqsvr_gen-cpp2 boost_system boost_filesystem pthread glog gflags folly thrift thriftcpp2 thriftprotocol zstd ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} dl)
 

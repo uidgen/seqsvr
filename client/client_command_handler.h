@@ -21,7 +21,9 @@
 #include <vector>
 #include <folly/Range.h>
 
-int DoClientCommand(const std::vector<folly::StringPiece>& command_lines);
+#include "proto/gen-cpp2/AllocService.h"
+
+int DoClientCommand(seqsvr::AllocServiceAsyncClient* client, const std::vector<folly::StringPiece>& command_lines);
 
 #endif
 

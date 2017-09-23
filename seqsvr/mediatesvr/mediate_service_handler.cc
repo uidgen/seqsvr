@@ -15,22 +15,26 @@
  * limitations under the License.
  */
 
-// TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
+#include "mediatesvr/mediate_service_handler.h"
 
-#ifndef	ALLOCSVR_ZRPC_ALLCO_DISPATCHER_H_
-#define	ALLOCSVR_ZRPC_ALLCO_DISPATCHER_H_
+// #include "seqsvr/sequence_manager.h"
 
-#include "nebula/net/zproto/zproto_package_data.h"
-
-class ZRpcAllocDispatcher {
-public:
-  ZRpcAllocDispatcher();
-  ~ZRpcAllocDispatcher() = default;
+//void MediateServiceHandler::RegisterAllocSvr() {
+//  
+//}
+//
+//void MediateServiceHandler::UnRegisterAllocSvr() {
+//  
+//}
+//
+//void MediateServiceHandler::UpdateRouteTable(std::unique_ptr<seqsvr::Router> router) {
+//  
+//}
+//
+void MediateServiceHandler::RegisterAllocSvr(std::unique_ptr< ::seqsvr::NodeAddrInfo> node_addr) {
   
-  static ProtoRpcResponsePtr FetchNextSequence(RpcRequestPtr request);
-  static ProtoRpcResponsePtr GetCurrentSequence(RpcRequestPtr request);
-  static ProtoRpcResponsePtr FetchNextSequenceList(RpcRequestPtr request);
-  static ProtoRpcResponsePtr GetCurrentSequenceList(RpcRequestPtr request);
-};
+}
 
-#endif // ALLOCSVR_ZRPC_ALLCO_DISPATCHER_H_
+void MediateServiceHandler::UnRegisterAllocSvr(std::unique_ptr< ::seqsvr::NodeAddrInfo> node_addr) {
+  
+}

@@ -16,36 +16,37 @@
  */
 
 #include "mediatesvr/mediate_server.h"
-#include "mediatesvr/mediate_handler.h"
+// #include "mediatesvr/mediate_handler.h"
+
+#include "mediatesvr/mediate_service_handler.h"
 
 bool MediateServer::Initialize() {
-
-  // 客户端连接服务
-  RegisterService("mediate_server", "http_server", "http");
-  RegisterService("store_client", "rpc_client", "zrpc");
-  BaseServer::Initialize();
-  
-#if 0
-  // one
-  timer_manager_->ScheduleOneShotTimeout([]() {
-    LOG(INFO) << "ScheduleOneShotTimeout!!!!";
-  }, 1000);
-  
-  // once
-  timer_manager_->ScheduleRepeatingTimeout([]() {
-    static int i = 0;
-    LOG(INFO) << "ScheduleRepeatingTimeout - " << i++;
-  }, 1000);
-#endif
-  
   return true;
 }
 
 bool MediateServer::Run() {
-  BaseServer::Run();
+  auto handler = std::make_shared<MediateServiceHandler>();
+  server_ = std::make_shared<apache::thrift::ThriftServer>();
+  server_->setInterface(handler);
+  server_->setPort(9090);
+  
+  printf("Starting the server...\n");
+  server_->serve();
+  printf("done.\n");
   return true;
 }
 
+void MediateServer::Quit() {
+  server_->stop();
+}
+
+// #include <folly/json.h>
+// #include "base/config.h"
+
 int main(int argc, char* argv[]) {
+  // auto sets = MakeTestSetsConfig(2);
+  // auto d = folly::toDynamic(sets);
+  // folly::PrintTo(d, &std::cout);
+  
   return nebula::DoMain<MediateServer>(argc, argv);
 }

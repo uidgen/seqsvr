@@ -21,42 +21,49 @@
 #include <folly/MemoryMapping.h>
 #include <folly/Singleton.h>
 
-#include "proto/cc/seqsvr.pb.h"
+#include "proto/gen-cpp2/seqsvr_types.h"
 #include "base/set.h"
 
-// TODO(@benqi): 单机模拟set的allocsvr和storesvr
+
 class StoreSvrManager {
 public:
   ~StoreSvrManager();
   
   static std::shared_ptr<StoreSvrManager> GetInstance();
   
-  bool Initialize(const std::string& set_name, const std::string& filepath);
+  // 通过配置文件加载
+  // 参数说明
+  // set_size: 整个系统里分配了多少个set
+  // set_idx:属于第几个set
+  // filepath: 存储路径
+  bool Initialize(SetID set_id, const std::string& filepath);
   
-  std::string GetSectionsData();
-  bool GetSectionsData(std::string* data);
+  bool GetMaxSeqsData(seqsvr::MaxSeqsData& max_seqs);
+  uint64_t SetSectionMaxSeq(uint32_t id, uint64_t max_seq);
   
-  uint64_t SetSectionsData(uint32_t section_id, uint64_t max_seq);
-  
-  zproto::Router& GetCacheRouter() {
-    return cache_router_;
+  void GetCacheRouter(seqsvr::Router& router) {
+    router = cache_router_;
   }
-  
-  bool SaveCacheRouter(const zproto::Router& router);
+  bool SaveCacheRouter(const seqsvr::Router& router);
   
 private:
   StoreSvrManager() = default;
   friend class folly::Singleton<StoreSvrManager>;
   
+  bool inited_ = false;
+
+  // std::string seq_file_path_;
+  // set
+  std::unique_ptr<Set> set_;
+
+  // 使用内存映射文件文件操作section文件
   int section_fd_ {-1};
   folly::MemoryMapping* section_max_seqs_mapping_ {nullptr};
-  folly::Range<uint64_t*> mapping_mem_;
-    
-  bool inited_ = false;
-  std::string seq_file_path_;
-  std::string route_table_file_path_;
+  // folly::Range<uint64_t*> mapping_mem_;
   
-  zproto::Router cache_router_;
+  // 路由表存储文件
+  std::string route_table_file_path_;
+  seqsvr::Router cache_router_;
 };
 
 #endif

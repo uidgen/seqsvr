@@ -20,12 +20,12 @@
 
 #include <mutex>
 
-#include <folly/MemoryMapping.h>
+// #include <folly/MemoryMapping.h>
 #include <folly/Singleton.h>
 
 #include "base/set.h"
+#include "allocsvr/client_manager.h"
 #include "allocsvr/lease_clerk.h"
-#include "proto/cc/seqsvr.pb.h"
 
 enum AllocSvrState {
   kAllocNone = 0,
@@ -36,29 +36,15 @@ enum AllocSvrState {
   kAllocError,
 };
 
-//struct IDRangeSections {
-//  IDRange range;
-//  std::vector<uint64_t> section_max_seqs_;
-//  std::vector<uint64_t> cur_seqs_;
-//};
-
 class RouteTable;
-struct SequenceWithRouterTable {
-  ~SequenceWithRouterTable() {
-    if (router) delete router;
-    router = nullptr;
-  }
-  
-  zproto::Router* Release() {
-    zproto::Router* r = router;
-    router = nullptr;
-    return r;
-  }
-  
-  uint64_t seq{0};
-  zproto::Router* router{nullptr};
-};
 
+// allocsvr流程：
+// 1. 从存储系统里取出路由表
+// 2. 通过本机Addr信息到路由表里获取当前服务号段列表
+// 3. 启动租约服务
+// 4. 从存储系统里取出max_seqs集合
+// 5. 开始对客户端提供服务
+//
 // TODO(@benqi): 单机模拟set的allocsvr和storesvr
 // 未加载成功重试加载
 class AllocSvrManager : public LeaseClerk::LeaseCallback {
@@ -67,52 +53,72 @@ public:
   
   static std::shared_ptr<AllocSvrManager> GetInstance();
   
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  void Initialize(nebula::TimerManager* timer_manager, const std::string& set_name, const std::string& alloc_name);
+  ////////////////////////////////////////////////////////////////////////////
+  // alloc_addr: allocsvr的本机地址信息
+  // store_addr_list: storesvr地址列表
+  void Initialize(nebula::TimerManager* timer_manager,
+        const IpAddrInfo& alloc_addr,
+        const IpAddrInfoList& store_addr_list);
+  
   void Destroy();
   
-  bool GetCurrentSequence(uint32_t id, uint32_t client_version, SequenceWithRouterTable& o);
-  bool FetchNextSequence(uint32_t id, uint32_t client_version, SequenceWithRouterTable& o);
+  // 客户端接口
+  bool GetCurrentSequence(uint32_t id, uint32_t client_version, seqsvr::Sequence& o);
+  bool FetchNextSequence(uint32_t id, uint32_t client_version, seqsvr::Sequence& o);
   
-  //////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
+  // 租约回调接口实现
   // 租约生效
-  virtual void OnLeaseValid(RouteTable& table);
+  void OnLeaseValid(seqsvr::Router& router) override;
   // 路由表更新
-  virtual void OnLeaseUpdated(RouteTable& table);
+  void OnLeaseUpdated(seqsvr::Router& router) override;
   // 租约失效
-  virtual void OnLeaseInvalid();
+  void OnLeaseInvalid() override;
 
 private:
   AllocSvrManager()
-    : section_max_seqs_(kSectionSlotSize),
-      cur_seqs_(kMaxIDSize),
-      state_(kAllocNone) {}
+    : state_(kAllocNone) {}
   
   friend class folly::Singleton<AllocSvrManager>;
   
   // bytes
   void LoadMaxSeq();
-  void SaveMaxSeq(uint32_t section_id, uint64_t section_max_seq);
+  void SaveMaxSeq(uint32_t id, uint64_t section_max_seq);
 
-  void OnMaxSeqLoaded(const std::string& data);
+  void OnMaxSeqLoaded(seqsvr::MaxSeqsData& data);
   void OnMaxSeqSaved(bool result);
 
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  std::string set_name_;
-  std::string alloc_name_;
+  ////////////////////////////////////////////////////////////////////////////
+  // alloc_addr: allocsvr的本机地址信息
+  // store_addr_list: storesvr地址列表
+  IpAddrInfo alloc_addr_;
+  IpAddrInfoList store_addr_list_;
   
-  std::vector<uint64_t> section_max_seqs_;
-  std::vector<uint64_t> cur_seqs_;
-
+  // store客户端管理器，存储storesvr
+  std::unique_ptr<ClientManager> client_;
+  
   // 状态
   int state_{kAllocNone};
-    
-  std::mutex mutex_;
-  std::unique_ptr<LeaseClerk> lease_;
   
-  AllocEntry* cache_alloc_entry_ {nullptr};
-  RouteTable table_;
-  // RouteSearchTable route_search_table_;
+  // 路由表
+  seqsvr::Router table_;
+  // 保护Router
+  // TODO(@benqi):
+  // 1. 使用读写锁，
+  // 2. 对router的操作封装成wrapper，预防忘记线程保护
+  std::mutex table_lock_;
+  
+  // 本机路由节点
+  seqsvr::RouterNode* cache_my_node_ {nullptr};
+
+  // 路由表租约
+  std::unique_ptr<LeaseClerk> lease_;
+
+  // 同个号段内的用户共享一个max_seq
+  // 号段对应max_seq
+  std::vector<int64_t> section_max_seqs_;
+  // 用户当前cur_seqs_
+  std::vector<int64_t> cur_seqs_;
 };
 
 #endif

@@ -17,29 +17,19 @@
 include_directories(. .. ../../nebula)
 
 set (SRC_LIST
-  ../base/section.h
-  ../base/set.h
-  ../base/router_table.cc
-  ../base/router_table.h
   lease_clerk.cc
   lease_clerk.h
+  client_manager.cc
+  client_manager.h
   allocsvr_manager.cc
   allocsvr_manager.h
   alloc_server.cc
   alloc_server.h
-  zrpc_alloc_dispatcher.cc
-  zrpc_alloc_dispatcher.h
-  zrpc_alloc_service.cc
-  zrpc_alloc_service.h
-  alloc_service_impl.cc
-  alloc_service_impl.h
-
-  ../proto/cc/seqsvr.pb.cc
-  ../proto/cc/seqsvr.pb.h
-  ../proto/proto/seqsvr.proto
-  ../base/message_handler_util.h
-  )
+  alloc_service_handler.cc
+  alloc_service_handler.h
+)
 
 add_executable (allocsvr ${SRC_LIST})
-target_link_libraries (allocsvr net base protobuf)
+#target_link_libraries (allocsvr net base protobuf)
+target_link_libraries (allocsvr seqsvr_base base seqsvr_gen-cpp2 boost_system boost_filesystem pthread glog gflags folly thrift thriftcpp2 thriftprotocol zstd ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} dl)
 

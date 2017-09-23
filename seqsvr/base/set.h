@@ -15,54 +15,50 @@
  * limitations under the License.
  */
 
-#ifndef SEQSVR_SET_H_
-#define SEQSVR_SET_H_
+#ifndef BASE_SET_H_
+#define BASE_SET_H_
 
 #include "base/section.h"
 
-#ifndef DEBUG_TEST
-// 生产环境
-const uint32_t kSetSize = 1;                      // 最少3个set
-const uint32_t kSetAllocSize = 1;                 // 1个set分配n个allocsvr
-#else
-// 为了在开发机上能快速启动、运行和调试
-const uint32_t kSetSize = 1;                      // 1个set
-const uint32_t kSetAllocSize = 1;                 // 1个set分配n个allocsvr
-#endif
-
-//struct SvrAddr {
-//  std::string host;   // host
-//  uint16_t port;      // port
-//};
-
-//struct Set {
-//  uint32_t set_id;        // set唯一ID，由运维配置
-//  uint32_t id_begin;      // set集中第一个id
-//  uint32_t size;          // 整个set管理的id值
-//};
-
-#if 0
-// 初始化，通过配置获取
-// void Initialize(uint32_t set_id=1, uint32_t alloc_id=1);
-// 当前服务分配给哪个set
-// uint32_t GetSetID();
-// 当前Alloc模块
-// uint32_t GetSetAllocID();
-
-// 单服务Set单位
-class SetUnit {
+// SectionSet
+class Set {
 public:
-  SetUnit();
-  ~SetUnit();
+  Set(SetID _set_id, folly::Range<uint64_t*> data)
+  : set_id(_set_id),
+  set_max_seqs_data(data) {
+    set_max_seqs_data = data;
+  }
   
-  bool Initialize(uint32_t set_id=1, uint32_t alloc_id=1);
+  ~Set() {
+    set_max_seqs_data.clear();
+  }
+  
+  //////////////////////////////////////////////////////////////////////////
+  std::string ToString() const {
+    return folly::sformat("set_{}_{}", set_id.id_begin, set_id.size);
+  }
+  
+  // 对外服务
+  // void GetSectionSetData(std::string& data) const {
+  //   data.assign((char*)set_max_seqs_data.data(), set_max_seqs_data.size()*sizeof(uint64_t));
+  // }
+  
+  SetID GetID() const {
+    return set_id;
+  }
+  
+  folly::Range<uint64_t*> GetMaxSeqsData() const {
+    return set_max_seqs_data;
+  }
+  
+  uint64_t SetMaxSeq(uint32_t id, uint64_t max_seq);
+  
+  // uint64_t SetMaxSeq(uint32_t id, uint64_t max_seq);
   
 private:
-  // 当前序号
-  std::vector<uint64_t> cur_seqs_;
-  std::vector<uint64_t> section_max_seqs_;
-  std::vector<Section>  sections_;
+  //////////////////////////////////////////////////////////////////////////
+  SetID set_id;
+  folly::Range<uint64_t*> set_max_seqs_data;
 };
-#endif
 
 #endif

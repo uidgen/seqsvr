@@ -18,14 +18,134 @@
 #ifndef SEQSVR_BASE_CONFIG_H_
 #define SEQSVR_BASE_CONFIG_H_
 
+// #include "nebula/base/json/json.h"
+
 #include <string>
-#include <vector>
+#include <list>
+#include <folly/DynamicConverter.h>
 
-#include "base/set.h"
-
+#include "nebula/net/base/ip_addr_info.h"
 #include "nebula/base/configurable.h"
-#include "nebula/base/string_builder.h"
 
+#include "proto/gen-cpp2/seqsvr_types.h"
+// #include "nebula/base/string_builder.h"
+
+
+/*******************************************************************
+// sets.json配置文件格式
+[
+  {
+    "allocsvrs" : [
+      {
+        "addr" : "127.0.0.1",
+        "port" : 10000
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 10001
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 10002
+      }
+    ],
+    "id" : 0,
+    "size" : 1048576,
+    "storesvrs" : [
+      {
+        "addr" : "127.0.0.1",
+        "port" : 11000
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 11001
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 11002
+      }
+    ]
+  },
+  {
+    "allocsvrs" : [
+      {
+        "addr" : "127.0.0.1",
+        "port" : 10003
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 10004
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 10005
+      }
+    ],
+    "id" : 1048576,
+    "size" : 1048576,
+    "storesvrs" : [
+      {
+        "addr" : "127.0.0.1",
+        "port" : 11003
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 11004
+      },
+      {
+        "addr" : "127.0.0.1",
+        "port" : 11005
+      }
+    ]
+  }
+]
+*/
+
+
+// 配置文件
+struct SetConfig {
+  uint32_t id;
+  uint32_t size;
+  IpAddrInfoList allocsvrs;
+  IpAddrInfoList storesvrs;
+};
+
+// TODO(@benqi): 使用反射Marsh/Unmarshal
+namespace folly {
+  
+template <> struct DynamicConverter<SetConfig> {
+  static SetConfig convert(const dynamic& d) {
+    SetConfig set;
+    set.id = convertTo<uint32_t>(d["id"]);
+    set.size = convertTo<uint32_t>(d["size"]);
+    set.allocsvrs = convertTo<IpAddrInfoList>(d["allocsvrs"]);
+    set.storesvrs = convertTo<IpAddrInfoList>(d["storesvrs"]);
+    
+    return set;
+  }
+};
+
+template <> struct DynamicConstructor<SetConfig, void> {
+  static dynamic construct(const SetConfig& x) {
+    dynamic d = dynamic::object;
+    d.insert("id", x.id);
+    d.insert("size", x.size);
+    d.insert("allocsvrs", toDynamic(x.allocsvrs));
+    d.insert("storesvrs", toDynamic(x.storesvrs));
+    return d;
+  }
+};
+  
+}
+
+// struct SetsConfig {
+typedef std::list<SetConfig> SetsConfig;
+
+
+/////////////////////////////////////////////////////////////////////
+// DEBUG_TEST
+SetsConfig MakeTestSetsConfig(int set_size, int set_range_size=1<<20);
+seqsvr::Router MakeTestRouter(const SetsConfig& sets);
 
 // 测试用
 //
@@ -37,7 +157,8 @@ struct SeqSvrConfig : public nebula::Configurable {
   }
   bool SetConf(const std::string& conf_name, const folly::dynamic& conf) override;
   
-  SetList sets;
+  // SetList sets;
+  SetsConfig sets;
 };
 
 //struct AllocEntry {
@@ -53,3 +174,4 @@ struct SeqSvrConfig : public nebula::Configurable {
 //};
 
 #endif
+

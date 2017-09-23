@@ -19,20 +19,12 @@ include_directories(. .. ../../nebula)
 set (SRC_LIST
   sequence_manager.cc
   sequence_manager.h
+  sequence_service_handler.cc
+  sequence_service_handler.h
   seq_server.cc
   seq_server.h
-  zrpc_seq_dispatcher.cc
-  zrpc_seq_dispatcher.h
-  zrpc_seq_service.cc
-  zrpc_seq_service.h
-  seq_service_impl.cc
-  seq_service_impl.h
-
-  ../proto/cc/seqsvr.pb.cc
-  ../proto/cc/seqsvr.pb.h
-  ../proto/proto/seqsvr.proto
   )
 
 add_executable (seqsvr ${SRC_LIST})
-target_link_libraries (seqsvr net base protobuf)
+target_link_libraries (seqsvr seqsvr_base base seqsvr_gen-cpp2 boost_system boost_filesystem pthread glog gflags folly thrift thriftcpp2 thriftprotocol zstd ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} dl)
 

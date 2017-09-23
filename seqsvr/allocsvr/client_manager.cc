@@ -15,23 +15,18 @@
  * limitations under the License.
  */
 
-// TODO(@benqi): 使用zrpc-code-gen代码生成工具自动生成
+#include "allocsvr/client_manager.h"
 
-#ifndef	STORESVR_ZRPC_STORE_DISPATCHER_H_
-#define	STORESVR_ZRPC_STORE_DISPATCHER_H_
-
-#include "nebula/net/zproto/zproto_package_data.h"
-
-class ZRpcStoreDispatcher {
-public:
-  ZRpcStoreDispatcher();
-  ~ZRpcStoreDispatcher() = default;
+int64_t ClientUtil::SaveMaxSeq(int32_t id, int64_t max_seq) {
+  CheckOrMakeClient();
   
-  static ProtoRpcResponsePtr LoadMaxSeqsData(RpcRequestPtr request);
-  static ProtoRpcResponsePtr SaveMaxSeq(RpcRequestPtr request);
+  if (client_) {
+    // auto evb = folly::EventBaseManager::get()->getEventBase();
+    // evb->runInEventBaseThread([this, section_id, max_seq] () {
+    auto f = client_->future_SaveMaxSeq(id, max_seq);
+    f.get();
+    // });
+  }
   
-  static ProtoRpcResponsePtr UpdateRouteTable(RpcRequestPtr request);
-  static ProtoRpcResponsePtr GetRouteTable(RpcRequestPtr request);
-};
-
-#endif // STORESVR_ZRPC_STORE_DISPATCHER_H_
+  return 0;
+}

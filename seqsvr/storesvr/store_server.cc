@@ -22,36 +22,63 @@
 #include "nebula/base/config_manager.h"
 
 #include "storesvr/storesvr_manager.h"
-
+#include "storesvr/store_service_handler.h"
+#include "base/thrift_util.h"
 
 StoreServer::StoreServer() {
   auto config_manager = nebula::ConfigManager::GetInstance();
-  
-  config_manager->Register("store", &store_config_);
+  config_manager->Register("system", this);
+  config_manager->Register("storesvr", this);
+  config_manager->Register("sets", this);
 }
 
-
-bool StoreServer::Initialize() {
-  auto store_instance = StoreSvrManager::GetInstance();
-  store_instance->Initialize(store_config_.set_name, store_config_.store_path);
-  
-  RegisterService("store_server", "rpc_server", "zrpc");
-  BaseServer::Initialize();
-  
-#if 0
-  // one
-  timer_manager_->ScheduleOneShotTimeout([]() {
-    LOG(INFO) << "ScheduleOneShotTimeout!!!!";
-  }, 1000);
-  
-  // once
-  timer_manager_->ScheduleRepeatingTimeout([]() {
-    static int i = 0;
-    LOG(INFO) << "ScheduleRepeatingTimeout - " << i++;
-  }, 1000);
-#endif
+// Override from Configurable
+bool StoreServer::StoreServer::SetConf(const std::string& conf_name, const folly::dynamic& conf) {
+  if (conf_name == "storesvr") {
+    addr_ = folly::convertTo<IpAddrInfo>(conf);
+  } else if (conf_name == "system") {
+    db_path_ = folly::convertTo<std::string>(conf["db_path"]);
+    set_id_.id_begin = folly::convertTo<uint32_t>(conf["set_id"]);
+    set_id_.size = folly::convertTo<uint32_t>(conf["set_size"]);
+  } else if (conf_name == "sets") {
+    sets_ = folly::convertTo<SetsConfig>(conf);
+  }
   
   return true;
+}
+
+bool StoreServer::Initialize() {
+  auto instance = StoreSvrManager::GetInstance();
+  instance->Initialize(set_id_, db_path_);
+
+#ifdef DEBUG_TEST
+  auto router = MakeTestRouter(sets_);
+  LOG(INFO) << "MakeTestRouter: " << convertToString(router);
+  instance->SaveCacheRouter(router);
+#endif
+  
+  // RegisterService("store_server", "rpc_server", "zrpc");
+  // BaseServer::Initialize();
+  
+  return true;
+}
+
+bool StoreServer::Run() {
+  auto handler = std::make_shared<StoreServiceHandler>();
+  server_ = std::make_shared<apache::thrift::ThriftServer>();
+  server_->setInterface(handler);
+  server_->setPort(addr_.port);
+  
+  printf("Starting the server...\n");
+  server_->serve();
+  printf("done.\n");
+  return true;
+}
+
+void StoreServer::Quit() {
+  server_->stop();
+  sleep(1);
+  BaseDaemon::Quit();
 }
 
 int main(int argc, char* argv[]) {
