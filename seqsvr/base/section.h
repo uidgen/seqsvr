@@ -112,7 +112,7 @@ inline uint32_t CalcSetSectionSize(SetID set_id,
 
 // 检查id是否在当前set里
 inline bool CheckIDByRange(RangeID range, uint32_t id) {
-  return id>=range.id_begin && id<range.size+id;
+  return id>=range.id_begin && id<range.id_begin+range.size;
 }
 
 // 存储里会用到
