@@ -1,0 +1,5 @@
+Name: seqsvr.mediate
+ListenOn: 0.0.0.0:10106
+Log:
+  Mode: file
+  Path: ../logs/mediate

@@ -1,0 +1,5 @@
+Name: seqsvr.alloc
+ListenOn: 0.0.0.0:10100
+Log:
+  Mode: file
+  Path: ../logs/alloc

@@ -1,0 +1,5 @@
+Name: seqsvr.store
+ListenOn: 0.0.0.0:10102
+Log:
+  Mode: file
+  Path: ../logs/store
