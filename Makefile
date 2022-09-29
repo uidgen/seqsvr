@@ -2,7 +2,7 @@ VERSION=v0.87.1-teamgram-server
 BUILD=`date +%F`
 SHELL := /bin/bash
 BASEDIR = $(shell pwd)
-INSTALL="deploy/build"
+INSTALL="deploy"
 
 # build with verison infos
 versionDir="github.com/teamgram/marmota/pkg/version"

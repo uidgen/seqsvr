@@ -1,4 +1,6 @@
 # seqsvr proto
+
+
 ```
 	"TLMediateRegisterAllocSvr":   RPCContextTuple{"/seqsvr.RPCMediate/mediate_registerAllocSvr", func() interface{} { return new(Bool2) }},
 	"TLMediateUnRegisterAllocSvr": RPCContextTuple{"/seqsvr.RPCMediate/mediate_unRegisterAllocSvr", func() interface{} { return new(Bool2) }},

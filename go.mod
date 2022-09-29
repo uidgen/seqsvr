@@ -3,6 +3,7 @@ module github.com/teamgram/seqsvr
 go 1.17
 
 require (
+	github.com/edsrzf/mmap-go v1.1.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/stretchr/testify v1.8.0
 	github.com/teamgram/marmota v0.1.12

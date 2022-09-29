@@ -18,9 +18,16 @@
 
 package dao
 
+import (
+	"github.com/teamgram/seqsvr/seqsvr/store/internal/config"
+)
+
 type Dao struct {
+	*StoreManager
 }
 
-func New() *Dao {
-	return new(Dao)
+func New(c config.Config) *Dao {
+	return &Dao{
+		StoreManager: MustNewStoreManager(c.SetID, c.Data),
+	}
 }

@@ -25,8 +25,10 @@ import (
 // StoreLoadMaxSeqsData
 // store.loadMaxSeqsData = MaxSeqsData;
 func (c *StoreCore) StoreLoadMaxSeqsData(in *seqsvr.TLStoreLoadMaxSeqsData) (*seqsvr.MaxSeqsData, error) {
-	// TODO: not impl
-	c.Logger.Errorf("store.loadMaxSeqsData blocked, License key from https://teamgram.net required to unlock enterprise features.")
+	rVal, err := c.svcCtx.Dao.StoreManager.GetMaxSeqsData()
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, seqsvr.ErrEnterpriseIsBlocked
+	return rVal, nil
 }

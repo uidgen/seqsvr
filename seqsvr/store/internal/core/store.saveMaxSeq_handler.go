@@ -25,8 +25,7 @@ import (
 // StoreSaveMaxSeq
 // store.saveMaxSeq id:int max_seq:long = Int64V;
 func (c *StoreCore) StoreSaveMaxSeq(in *seqsvr.TLStoreSaveMaxSeq) (*seqsvr.Int64V, error) {
-	// TODO: not impl
-	c.Logger.Errorf("store.saveMaxSeq blocked, License key from https://teamgram.net required to unlock enterprise features.")
+	rV := c.svcCtx.Dao.StoreManager.SetSectionMaxSeq(in.GetId(), in.GetMaxSeq())
 
-	return nil, seqsvr.ErrEnterpriseIsBlocked
+	return seqsvr.MakeInt64V(rV), nil
 }

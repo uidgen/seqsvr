@@ -19,9 +19,13 @@
 package config
 
 import (
+	"github.com/teamgram/seqsvr/proto/seqsvr"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type Config struct {
 	zrpc.RpcServerConf
+
+	Data  string
+	SetID seqsvr.SetID
 }

@@ -32,3 +32,7 @@ deploy/bin/*
 !deploy/bin/killall.sh
 deploy/logs/*
 !deploy/logs/.gitkeep
+deploy/data/*
+!deploy/data/.gitkeep
+
+seqsvr/store/internal/dao/data/

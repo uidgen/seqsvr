@@ -25,8 +25,7 @@ import (
 // StoreSaveRouteTable
 // store.saveRouteTable router:Router = Bool2;
 func (c *StoreCore) StoreSaveRouteTable(in *seqsvr.TLStoreSaveRouteTable) (*seqsvr.Bool2, error) {
-	// TODO: not impl
-	c.Logger.Errorf("store.saveRouteTable blocked, License key from https://teamgram.net required to unlock enterprise features.")
+	c.svcCtx.Dao.StoreManager.SaveCacheRouter(in.GetRouter())
 
-	return nil, seqsvr.ErrEnterpriseIsBlocked
+	return seqsvr.BoolTrue, nil
 }

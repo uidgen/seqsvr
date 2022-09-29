@@ -25,8 +25,7 @@ import (
 // StoreLoadRouteTable
 // store.loadRouteTable = Router;
 func (c *StoreCore) StoreLoadRouteTable(in *seqsvr.TLStoreLoadRouteTable) (*seqsvr.Router, error) {
-	// TODO: not impl
-	c.Logger.Errorf("store.loadRouteTable blocked, License key from https://teamgram.net required to unlock enterprise features.")
+	cacheRouter := c.svcCtx.Dao.StoreManager.GetCacheRouter()
 
-	return nil, seqsvr.ErrEnterpriseIsBlocked
+	return cacheRouter, nil
 }

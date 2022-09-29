@@ -3,3 +3,8 @@ ListenOn: 0.0.0.0:10102
 Log:
   Mode: file
   Path: ../logs/store
+
+SetID:
+  IdBegin: 0
+  Size: 10240
+Data: "../data"
