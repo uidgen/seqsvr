@@ -25,8 +25,11 @@ import (
 // AllocFetchNextSequence
 // alloc.fetchNextSequence id:int version:int = Sequence;
 func (c *AllocCore) AllocFetchNextSequence(in *seqsvr.TLAllocFetchNextSequence) (*seqsvr.Sequence, error) {
-	// TODO: not impl
-	c.Logger.Errorf("alloc.fetchNextSequence blocked, License key from https://teamgram.net required to unlock enterprise features.")
+	seq, err := c.svcCtx.Dao.AllocManager.FetchNextSequence(in.Id, in.Version)
+	if err != nil {
+		c.Logger.Errorf("alloc.fetchNextSequence - error: %v", err)
+		return nil, err
+	}
 
-	return nil, seqsvr.ErrEnterpriseIsBlocked
+	return seq, nil
 }

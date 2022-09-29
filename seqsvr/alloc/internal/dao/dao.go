@@ -18,9 +18,20 @@
 
 package dao
 
+import (
+	"github.com/teamgram/marmota/pkg/net/rpcx"
+	"github.com/teamgram/seqsvr/seqsvr/alloc/internal/config"
+	store_client "github.com/teamgram/seqsvr/seqsvr/store/client"
+)
+
 type Dao struct {
+	store_client.StoreClient
+	*AllocManager
 }
 
-func New() *Dao {
-	return new(Dao)
+func New(c config.Config) *Dao {
+	return &Dao{
+		StoreClient:  store_client.NewStoreClient(rpcx.GetCachedRpcClient(c.StoreClient)),
+		AllocManager: MustNewAllocManager(),
+	}
 }

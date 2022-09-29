@@ -24,4 +24,5 @@ import (
 
 type Config struct {
 	zrpc.RpcServerConf
+	StoreClient zrpc.RpcClientConf
 }
