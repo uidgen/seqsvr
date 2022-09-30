@@ -11,11 +11,20 @@ var (
 	BoolTrue  = MakeTLBoolTrue2(nil).To_Bool2()
 )
 
+func ToBool(b bool) *Bool2 {
+	if b {
+		return BoolTrue
+	} else {
+		return BoolFalse
+	}
+}
+
+func FromBool(b *Bool2) bool {
+	return Predicate_boolTrue2 == b.GetPredicateName()
+}
+
 func MakeInt64V(v int64) *Int64V {
-	return MakeTLInt64V(
-		&Int64V{
-			V: v,
-		}).To_Int64V()
+	return MakeTLInt64V(&Int64V{V: v}).To_Int64V()
 }
 
 //// RangeID

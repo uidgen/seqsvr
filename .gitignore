@@ -36,3 +36,4 @@ deploy/data/*
 !deploy/data/.gitkeep
 
 seqsvr/store/internal/dao/data/
+/seqsvr/alloc/client/cli/cli

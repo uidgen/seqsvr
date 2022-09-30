@@ -10,8 +10,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gogo/protobuf/jsonpb"
 	"github.com/teamgram/seqsvr/proto/seqsvr"
+
+	"github.com/gogo/protobuf/jsonpb"
 )
 
 func TestMustNewStoreManager(t *testing.T) {
@@ -21,8 +22,9 @@ func TestMustNewStoreManager(t *testing.T) {
 	}
 
 	store := MustNewStoreManager(setId, "./data")
-	// store.SetSectionMaxSeq(0, 123000)
+	store.SetSectionMaxSeq(0, 1)
 	// store.SetSectionMaxSeq(1, 234)
+	// store.SetSectionMaxSeq(2, 222)
 	maxSeqs, _ := store.GetMaxSeqsData()
 	data, _ := (&jsonpb.Marshaler{}).MarshalToString(maxSeqs)
 	fmt.Println(data)

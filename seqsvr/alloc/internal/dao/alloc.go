@@ -7,10 +7,13 @@
 package dao
 
 import (
+	"context"
 	"fmt"
-	"github.com/gogo/protobuf/proto"
-	"github.com/teamgram/seqsvr/proto/seqsvr"
 	"sync"
+
+	"github.com/teamgram/seqsvr/proto/seqsvr"
+
+	"github.com/gogo/protobuf/proto"
 )
 
 const (
@@ -33,6 +36,7 @@ const (
 // TODO(@benqi): 单机模拟set的allocsvr和storesvr
 // 未加载成功重试加载
 type AllocManager struct {
+	*StoreManager
 	LeaseCallback
 
 	//   ////////////////////////////////////////////////////////////////////////////
@@ -54,15 +58,15 @@ type AllocManager struct {
 	// 1. 使用读写锁，
 	// 2. 对router的操作封装成wrapper，预防忘记线程保护
 	tableLock sync.Mutex
-	//
+
 	// 本机路由节点
 	cacheMyNode *seqsvr.RouterNode
-	//
-	//  // 路由表租约
-	//  std::unique_ptr<LeaseClerk> lease_;
-	//
-	//  // 同个号段内的用户共享一个max_seq
-	//  // 号段对应max_seq
+
+	// 路由表租约
+	lease *Lease
+
+	// 同个号段内的用户共享一个max_seq
+	// 号段对应max_seq
 	sectionMaxSeqs []int64
 
 	// 用户当前cur_seqs_
@@ -76,8 +80,87 @@ type AllocManager struct {
  3. 重启时，读出持久化的max_seq，赋值给cur_seq
 */
 
-func MustNewAllocManager() *AllocManager {
-	return nil
+func MustNewAllocManager(store *StoreManager) *AllocManager {
+	cacheMyNode := &seqsvr.RouterNode{
+		NodeAddr: &seqsvr.NodeAddrInfo{
+			Ip:   "127.0.0.1",
+			Port: 10100,
+		},
+		SectionRanges: []*seqsvr.RangeId{
+			&seqsvr.RangeId{
+				IdBegin: 0,
+				Size2:   10240,
+			},
+		},
+	}
+
+	table := &seqsvr.Router{
+		Version: 0,
+		NodeList: []*seqsvr.RouterNode{
+			cacheMyNode,
+		},
+	}
+
+	alloc := &AllocManager{
+		StoreManager:   store,
+		LeaseCallback:  nil,
+		state:          allocNone,
+		table:          table,
+		tableLock:      sync.Mutex{},
+		cacheMyNode:    cacheMyNode,
+		lease:          nil,
+		sectionMaxSeqs: nil,
+		curSeqs:        nil,
+	}
+
+	alloc.LoadMaxSeq()
+
+	return alloc
+}
+
+// LoadMaxSeq
+//////////////////////////////////////////////////////////////////////////////////////////////
+// bytes
+func (m *AllocManager) LoadMaxSeq() {
+	//// TODO(@beqni): NWR读
+	//// 2. 去storesvr加载max_seqs
+	//state_ = kAllocWaitRouteTable;
+	//
+	//seqsvr::MaxSeqsData max_seqs_data;
+	//client_->LoadMaxSeqsData(max_seqs_data);
+	//OnMaxSeqLoaded(max_seqs_data);
+	m.state = allocWaitRouteTable
+
+	maxSeqs, err := m.StoreManager.LoadMaxSeqsData(context.Background())
+	if err != nil {
+		return
+	}
+	m.OnMaxSeqLoaded(maxSeqs)
+}
+
+func (m *AllocManager) SaveMaxSeq(id int32, sectionMaxSeq int64) {
+	//// TODO(@beqni): NWR写
+	//
+	m.StoreManager.SaveMaxSeq(context.Background(), id, sectionMaxSeq)
+}
+
+func (m *AllocManager) OnMaxSeqLoaded(data *seqsvr.MaxSeqsData) {
+	// TODO(@benqi): 检查数据是否合法
+	// 复制数据
+	// LOG(INFO) << "OnMaxSeqLoaded - data len = " << data.length();
+	m.sectionMaxSeqs = data.MaxSeqs
+	// 将cur_seq设置为max_seq
+	m.curSeqs = make([]int64, len(m.sectionMaxSeqs)*seqsvr.PerSectionIdSize)
+	for i := 0; i < len(m.sectionMaxSeqs); i++ {
+		for j := i * seqsvr.PerSectionIdSize; j < seqsvr.PerSectionIdSize; j++ {
+			m.curSeqs[j] = m.sectionMaxSeqs[i]
+		}
+	}
+
+	m.state = allocInited
+}
+
+func (m *AllocManager) OnMaxSeqSaved() {
 }
 
 // GetCurrentSequence - GetCurrentSequence
@@ -94,10 +177,10 @@ func (m *AllocManager) GetCurrentSequence(id, clientVersion int32) (*seqsvr.Sequ
 	for _, v := range m.cacheMyNode.SectionRanges {
 		ok, _ := seqsvr.CalcSectionID(v.IdBegin, int(v.Size2), id)
 		if ok {
-			seq := &seqsvr.Sequence{
+			seq := seqsvr.MakeTLSequence(&seqsvr.Sequence{
 				Seq:    m.curSeqs[id-v.IdBegin],
 				Router: nil,
-			}
+			}).To_Sequence()
 			if clientVersion < m.table.Version {
 				seq.Router = proto.Clone(m.table).(*seqsvr.Router)
 			}
@@ -126,10 +209,10 @@ func (m *AllocManager) FetchNextSequence(id, clientVersion int32) (*seqsvr.Seque
 		ok, idx := seqsvr.CalcSectionID(v.IdBegin, int(v.Size2), id)
 		if ok {
 			m.curSeqs[id-v.IdBegin]++
-			seq := &seqsvr.Sequence{
+			seq := seqsvr.MakeTLSequence(&seqsvr.Sequence{
 				Seq:    m.curSeqs[id-v.IdBegin],
 				Router: nil,
-			}
+			}).To_Sequence()
 
 			if seq.Seq > m.sectionMaxSeqs[idx] {
 				m.SaveMaxSeq(id, seq.Seq)
@@ -150,11 +233,4 @@ func (m *AllocManager) FetchNextSequence(id, clientVersion int32) (*seqsvr.Seque
 	//
 	//  return false;
 	return nil, fmt.Errorf("invalid id - (%v, %d)", id, clientVersion)
-}
-
-func (m *AllocManager) SaveMaxSeq(id int32, sectionMaxSeq int64) {
-	//// TODO(@beqni): NWR写
-	//
-	//client_->SaveMaxSeq(id, section_max_seq);
-	m.SaveMaxSeq(id, sectionMaxSeq)
 }

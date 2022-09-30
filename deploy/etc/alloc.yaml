@@ -3,3 +3,7 @@ ListenOn: 0.0.0.0:10100
 Log:
   Mode: file
   Path: ../logs/alloc
+
+StoreClient:
+  Endpoints:
+    - 127.0.0.1:10102

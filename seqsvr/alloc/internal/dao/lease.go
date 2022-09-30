@@ -7,8 +7,9 @@
 package dao
 
 import (
-	"github.com/teamgram/seqsvr/proto/seqsvr"
 	"sync"
+
+	"github.com/teamgram/seqsvr/proto/seqsvr"
 )
 
 /*
@@ -57,7 +58,7 @@ type LeaseCallback interface {
 	OnLeaseInvalid()
 }
 
-type LeaseClerk struct {
+type Lease struct {
 	lock  sync.Mutex
 	state int
 

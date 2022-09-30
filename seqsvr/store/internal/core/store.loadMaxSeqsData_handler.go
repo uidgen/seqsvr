@@ -25,6 +25,8 @@ import (
 // StoreLoadMaxSeqsData
 // store.loadMaxSeqsData = MaxSeqsData;
 func (c *StoreCore) StoreLoadMaxSeqsData(in *seqsvr.TLStoreLoadMaxSeqsData) (*seqsvr.MaxSeqsData, error) {
+	_ = in
+
 	rVal, err := c.svcCtx.Dao.StoreManager.GetMaxSeqsData()
 	if err != nil {
 		return nil, err

@@ -20,6 +20,7 @@ package config
 
 import (
 	"github.com/teamgram/seqsvr/proto/seqsvr"
+
 	"github.com/zeromicro/go-zero/zrpc"
 )
 

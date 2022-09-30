@@ -21,10 +21,10 @@ package core
 import (
 	"context"
 
-	"github.com/zeromicro/go-zero/core/logx"
-
 	"github.com/teamgram/seqsvr/proto/seqsvr/rpc/metadata"
 	"github.com/teamgram/seqsvr/seqsvr/alloc/internal/svc"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type AllocCore struct {

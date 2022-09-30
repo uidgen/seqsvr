@@ -10,13 +10,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/gogo/protobuf/jsonpb"
 	"io/ioutil"
 	"os"
 
 	"github.com/teamgram/seqsvr/proto/seqsvr"
 
 	"github.com/edsrzf/mmap-go"
+	"github.com/gogo/protobuf/jsonpb"
 )
 
 func checkFileExists(filePath string) bool {
@@ -105,7 +105,7 @@ func MustNewStoreManager(setId seqsvr.SetID, filePath string) *StoreManager {
 	// 至此，初始化set成功
 	set := seqsvr.Set{
 		SetId:          setId,
-		SetMaxSeqsData: []byte(sectionMaxSeqsMapping),
+		SetMaxSeqsData: seqsvr.SliceInt64{MMap: sectionMaxSeqsMapping},
 	}
 	//std::make_unique<Set>(set_id, mapping_mem);
 
@@ -133,7 +133,7 @@ func MustNewStoreManager(setId seqsvr.SetID, filePath string) *StoreManager {
 	}
 
 	if cacheRouter == nil {
-		cacheRouter = new(seqsvr.Router)
+		cacheRouter = seqsvr.MakeTLRouter(nil).To_Router()
 	}
 
 	return &StoreManager{
@@ -158,10 +158,10 @@ func (s *StoreManager) GetMaxSeqsData() (*seqsvr.MaxSeqsData, error) {
 	//set_->GetMaxSeqsData().end());
 	//
 	//return true;
-	maxSeqs := &seqsvr.MaxSeqsData{
+	maxSeqs := seqsvr.MakeTLMaxSeqsData(&seqsvr.MaxSeqsData{
 		SetId:   new(seqsvr.RangeId),
 		MaxSeqs: nil,
-	}
+	}).To_MaxSeqsData()
 	maxSeqs.SetId.IdBegin = s.set.SetId.IdBegin
 	maxSeqs.SetId.Size2 = int32(s.set.SetId.Size)
 	for i := 0; i < s.set.SetMaxSeqsData.Len(); i++ {
